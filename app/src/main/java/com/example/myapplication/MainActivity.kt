@@ -2,18 +2,11 @@ package com.example.myapplication
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.navigation.HomePage
 import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage

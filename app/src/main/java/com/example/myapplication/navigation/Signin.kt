@@ -7,7 +7,6 @@ import androidx.navigation.NavController
 
 @Composable()
 fun SigninPage(navController: NavController){
-    Text(text = "this is sign in page")
     Button(onClick = {
         navController.navigate("home")
     }) {
