@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.composable.DashBoardPreview
+import com.example.myapplication.composable.GoalList
 import com.example.myapplication.utils.ColorUtils
 
 @Composable()
@@ -26,5 +27,6 @@ fun HomePage(navController: NavController) {
 //    }
     Box(modifier = Modifier.background(color = Color(ColorUtils.background))){
         DashBoardPreview()
+        GoalList()
     }
 }
