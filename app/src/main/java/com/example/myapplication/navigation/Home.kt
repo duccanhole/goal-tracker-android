@@ -24,7 +24,7 @@ fun HomePage(navController: NavController) {
 //    }) {
 //        Text(text = "navigate to sign-in page")
 //    }
-    Box(modifier = Modifier.fillMaxHeight().background(color = Color(ColorUtils.background))){
+    Box(modifier = Modifier.background(color = Color(ColorUtils.background))){
         DashBoardPreview()
     }
 }

@@ -1,9 +1,15 @@
 package com.example.myapplication
 
+import BottomBar
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +18,7 @@ import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage
 import com.example.myapplication.navigation.SignupPage
 import com.example.myapplication.navigation.StatisticPage
+import com.example.myapplication.utils.ColorUtils
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,11 +48,20 @@ class MainActivity : AppCompatActivity() {
 fun App() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomePage(navController) }
-        composable("statistic") { StatisticPage() }
-        composable("setting") { SettingPage() }
-        composable("sign-in") { SigninPage(navController) }
-        composable("sign-up") { SignupPage() }
+    Column(
+        modifier = Modifier.background(color = Color(ColorUtils.background))
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            modifier = Modifier.weight(1f)
+        ) {
+            composable("home") { HomePage(navController) }
+            composable("statistic") { StatisticPage() }
+            composable("setting") { SettingPage() }
+            composable("sign-in") { SigninPage(navController) }
+            composable("sign-up") { SignupPage() }
+        }
+        BottomBar(navController)
     }
 }
