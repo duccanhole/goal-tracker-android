@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.composable.DashBoardPreview
+import com.example.myapplication.composable.GoalList
 import com.example.myapplication.utils.ColorUtils
 
 @Composable()
@@ -24,7 +25,12 @@ fun HomePage(navController: NavController) {
 //    }) {
 //        Text(text = "navigate to sign-in page")
 //    }
-    Box(modifier = Modifier.fillMaxHeight().background(color = Color(ColorUtils.background))){
-        DashBoardPreview()
+    Box(modifier = Modifier
+        .fillMaxHeight()
+        .background(color = Color(ColorUtils.background))){
+        Column {
+            DashBoardPreview()
+            GoalList()
+        }
     }
 }

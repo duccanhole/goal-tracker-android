@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +36,7 @@ fun DashBoardPreview(name: String = "Guest") {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.account_circle_outline),
-                contentDescription = "avatar",
-                modifier = Modifier.size(50.dp)
-            )
+            Icon(Icons.Rounded.AccountCircle, contentDescription = null, modifier = Modifier.size(50.dp))
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "Hello, $name", fontSize = TextSizeUtils.LARGE, modifier = Modifier
