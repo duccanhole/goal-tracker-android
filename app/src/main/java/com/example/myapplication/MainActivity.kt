@@ -60,13 +60,13 @@ fun App() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Navigation.HOME,
+            startDestination = Navigation.SIGN_IN,
             modifier = Modifier.weight(1f)
         ) {
             composable(Navigation.HOME) { HomePage(navController) }
             composable(Navigation.STATISTIC) { StatisticPage() }
             composable(Navigation.SETTING) { SettingPage() }
-            composable(Navigation.SIGN_IN) { SigninPage(navController) }
+            composable(Navigation.SIGN_IN) { SigninPage() }
             composable(Navigation.SIGN_UP) { SignupPage() }
         }
 //        val currentDestination = navController.currentDestination?.route
