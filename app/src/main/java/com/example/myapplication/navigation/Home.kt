@@ -25,10 +25,8 @@ fun HomePage(navController: NavController) {
 //    }) {
 //        Text(text = "navigate to sign-in page")
 //    }
-    Box(modifier = Modifier.background(color = Color(ColorUtils.background))){
-        Column {
-            DashBoardPreview()
-            GoalList()
-        }
+    Column {
+        DashBoardPreview()
+        GoalList()
     }
 }
