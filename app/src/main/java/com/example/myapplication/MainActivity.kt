@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             App()
+
         }
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
@@ -59,7 +60,7 @@ fun App() {
             composable("home") { HomePage(navController) }
             composable("statistic") { StatisticPage() }
             composable("setting") { SettingPage() }
-            composable("sign-in") { SigninPage(navController) }
+            composable("sign-in") { SigninPage() }
             composable("sign-up") { SignupPage() }
         }
         BottomBar(navController)
