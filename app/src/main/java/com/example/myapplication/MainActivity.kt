@@ -2,16 +2,20 @@ package com.example.myapplication
 
 import BottomBar
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navigation.HomePage
 import com.example.myapplication.navigation.SettingPage
@@ -19,6 +23,7 @@ import com.example.myapplication.navigation.SigninPage
 import com.example.myapplication.navigation.SignupPage
 import com.example.myapplication.navigation.StatisticPage
 import com.example.myapplication.utils.ColorUtils
+import com.example.myapplication.utils.Navigation
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             App()
-
         }
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
@@ -49,20 +53,25 @@ class MainActivity : AppCompatActivity() {
 fun App() {
     val navController = rememberNavController()
 
+    val currentDestination by navController.currentBackStackEntryAsState()
+
     Column(
         modifier = Modifier.background(color = Color(ColorUtils.background))
     ) {
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = Navigation.HOME,
             modifier = Modifier.weight(1f)
         ) {
-            composable("home") { HomePage(navController) }
-            composable("statistic") { StatisticPage() }
-            composable("setting") { SettingPage() }
-            composable("sign-in") { SigninPage() }
-            composable("sign-up") { SignupPage() }
+            composable(Navigation.HOME) { HomePage(navController) }
+            composable(Navigation.STATISTIC) { StatisticPage() }
+            composable(Navigation.SETTING) { SettingPage() }
+            composable(Navigation.SIGN_IN) { SigninPage(navController) }
+            composable(Navigation.SIGN_UP) { SignupPage() }
         }
-        BottomBar(navController)
+//        val currentDestination = navController.currentDestination?.route
+        if (currentDestination?.destination?.route !in listOf(Navigation.SIGN_IN, Navigation.SIGN_UP)) {
+            BottomBar(navController)
+        }
     }
 }
