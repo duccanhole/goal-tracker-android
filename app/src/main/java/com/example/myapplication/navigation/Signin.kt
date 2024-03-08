@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,15 +42,25 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TextSizeUtils.LARGE
 
+fun onLogin(username: String, password: String) {
+    UserRepo.getInstance().login(username, password) { res, err ->
+        run {
+            Log.d("App", res.toString())
+            Log.d("App", "error:" + err?.message)
+        }
+    }
+}
+
 @Composable()
 @Preview
-fun SigninPage(){
-    var username by remember { mutableStateOf("")}
-    var password by remember { mutableStateOf("")}
+fun SigninPage() {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     Surface(
         color = Color(ColorUtils.background)
     ) {
@@ -63,43 +74,48 @@ fun SigninPage(){
             Text(
                 text = "Đăng nhập",
                 modifier = Modifier
-                            .padding(bottom = 60.dp),
+                    .padding(bottom = 60.dp),
                 fontSize = TextSizeUtils.LARGE,
                 fontWeight = FontWeight.Bold
 
             )
             TextField(
                 value = username,
-                onValueChange ={username=it},
-                label={ Text(text = "Tên Đăng nhập")},
+                onValueChange = { username = it },
+                label = { Text(text = "Tên Đăng nhập") },
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(Color.White)
                     .fillMaxWidth(),
-                textStyle = TextStyle(fontSize =TextSizeUtils.MEDIUM ) ,
+                textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
                 singleLine = true
 
             )
             TextField(
                 value = password,
-                onValueChange ={password=it},
-                label={ Text(text = "Mật Khẩu")},
+                onValueChange = { password = it },
+                label = { Text(text = "Mật Khẩu") },
                 modifier = Modifier
                     .padding(bottom = 30.dp, top = 30.dp)
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(Color.White)
                     .fillMaxWidth(),
-                textStyle = TextStyle(fontSize =TextSizeUtils.MEDIUM ),
+                textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true
 
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    onLogin(username = username, password = password)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(ColorUtils.primary), contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(ColorUtils.primary),
+                    contentColor = Color.White
+                )
 
             ) {
                 Text(text = "Đăng nhập", fontSize = TextSizeUtils.SMALL)
@@ -114,10 +130,11 @@ fun SigninPage(){
                 ) {
                     Text(
                         text = "Đăng ký ngay ",
-                        style= TextStyle(
+                        style = TextStyle(
                             Color(ColorUtils.primary),
-                            textDecoration = TextDecoration.Underline),
-                            fontSize = TextSizeUtils.SMALL
+                            textDecoration = TextDecoration.Underline
+                        ),
+                        fontSize = TextSizeUtils.SMALL
 
                     )
                 }
