@@ -102,4 +102,5 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.accompanist:accompanist-permissions:<latest_version>")
 }
