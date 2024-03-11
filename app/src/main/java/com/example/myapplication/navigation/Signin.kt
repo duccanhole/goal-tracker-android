@@ -1,6 +1,7 @@
 package com.example.myapplication.navigation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,21 +47,37 @@ import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TextSizeUtils.LARGE
-
-fun onLogin(username: String, password: String) {
+interface LoginCallback {
+    fun onSuccess()
+    fun onError(errormessage: String)
+}
+fun onLogin(username: String, password: String,callback: LoginCallback) {
     UserRepo.getInstance().login(username, password) { res, err ->
         run {
-            Log.d("App", res.toString())
-            Log.d("App", "error:" + err?.message)
+            if (err != null) {
+                callback.onError("Đã xảy ra lỗi khi đăng nhập")
+
+            } else {
+                callback.onSuccess()
+
+            }
         }
     }
 }
-
+fun checkvalidate(username: String,password: String):String{
+    if(username.isBlank()||password.isBlank()) return "Không được để trống !!"
+    if(username.length<3) return "Username quá ngắn!!"
+    if(password.length<6) return "Password quá ngắn!!"
+    return ""
+}
 @Composable()
-@Preview
-fun SigninPage() {
+fun SigninPage(navController:NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    var loading by remember {
+        mutableStateOf(false)
+    }
     Surface(
         color = Color(ColorUtils.background)
     ) {
@@ -107,7 +124,23 @@ fun SigninPage() {
             )
             Button(
                 onClick = {
-                    onLogin(username = username, password = password)
+                    errorMessage = checkvalidate(username, password)
+                    loading = true
+                    if (errorMessage=="") {
+                        onLogin(username = username, password = password, object : LoginCallback {
+                            override fun onSuccess() {
+                                navController.navigate("home")
+                                // lưu thông tin người dùng, dùng data store
+                                loading = false
+
+                            }
+
+                            override fun onError(errormessage: String) {
+                                errorMessage=errormessage
+                                loading = false
+                            }
+                        })
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,10 +148,18 @@ fun SigninPage() {
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(ColorUtils.primary),
                     contentColor = Color.White
-                )
-
+                ),
+                enabled = !loading
             ) {
-                Text(text = "Đăng nhập", fontSize = TextSizeUtils.SMALL)
+                Text(text = if(loading) "Đang xử lý" else "Đăng nhập", fontSize = TextSizeUtils.SMALL)
+            }
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = TextSizeUtils.SMALL,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(

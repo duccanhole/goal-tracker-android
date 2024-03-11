@@ -12,7 +12,7 @@ import java.util.Objects
 object UserRepo {
     private var client: UserService? = null;
     private var instance: UserRepo? = null
-    fun getInstance(): UserRepo {0
+    fun getInstance(): UserRepo {
         if (client == null) {
             val retrofit =
                 Retrofit.Builder().baseUrl("https://goal-tracker-server.onrender.com/")
