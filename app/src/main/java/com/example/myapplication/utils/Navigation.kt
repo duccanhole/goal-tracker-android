@@ -6,4 +6,5 @@ object Navigation {
     val SETTING = "setting"
     val SIGN_IN = "sign-in"
     val SIGN_UP = "sign-up"
+    val CREAT_GOAL = "create-goal"
 }

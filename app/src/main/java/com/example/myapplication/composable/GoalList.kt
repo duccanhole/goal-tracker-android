@@ -35,10 +35,11 @@ fun GoalList() {
                 Text(text = "Done: 2")
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
-            items(5) { index ->
-                Spacer(modifier = Modifier.height(10.dp))
+            items(25) { index ->
                 GoalItem()
+                Spacer(modifier = Modifier.height(10.dp))
             }
         }
     }
