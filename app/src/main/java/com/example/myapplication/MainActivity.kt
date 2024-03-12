@@ -67,7 +67,7 @@ fun App() {
             composable(Navigation.STATISTIC) { StatisticPage() }
             composable(Navigation.SETTING) { SettingPage() }
             composable(Navigation.SIGN_IN) { SigninPage(navController) }
-            composable(Navigation.SIGN_UP) { SignupPage() }
+            composable(Navigation.SIGN_UP) { SignupPage(navController) }
         }
 //        val currentDestination = navController.currentDestination?.route
         if (currentDestination?.destination?.route !in listOf(Navigation.SIGN_IN, Navigation.SIGN_UP)) {

@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,15 +32,44 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
+import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 
+interface SignupCallback {
+    fun onSuccess()
+    fun onError(errormessage: String)
+}
+fun onSignup(username: String, password: String,callback: SignupCallback) {
+    UserRepo.getInstance().login(username, password) { res, err ->
+        run {
+            if (err != null) {
+                Log.d("Apps",err.message.toString())
+                callback.onError("Tài khoản đã tồn tại hoặc xãy ra lỗi!!")
+
+            } else {
+                callback.onSuccess()
+
+            }
+        }
+    }
+}
+fun checkvalidate(username: String,password: String,repassword:String):String{
+    if(username.isBlank()||password.isBlank()) return "Không được để trống !!"
+    if(username.length<3) return "Username quá ngắn!!"
+    if(password.length<6) return "Password quá ngắn!!"
+    if(repassword!=password) return "Xác nhận mật khẩu không khớp!!"
+    return ""
+}
 @Composable()
-@Preview
-fun SignupPage() {
+fun SignupPage(navControler:NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
     Surface(
         color = Color(ColorUtils.background)
     ) {
@@ -75,7 +105,7 @@ fun SignupPage() {
                 onValueChange ={password=it},
                 label={ Text(text = "Mật Khẩu")},
                 modifier = Modifier
-                    .padding( top = 30.dp)
+                    .padding(top = 30.dp)
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(Color.White)
                     .fillMaxWidth(),
@@ -99,18 +129,51 @@ fun SignupPage() {
 
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    errorMessage = checkvalidate(username, password, repassword )
+                    loading = true
+                    Log.d("App",errorMessage)
+                    if(errorMessage==""){
+                        onSignup(username = username, password = password, object : SignupCallback {
+                            override fun onSuccess() {
+                                navControler.navigate(Navigation.SIGN_IN)
+
+                                loading = false
+
+                            }
+
+                            override fun onError(errormessage: String) {
+                                errorMessage=errormessage
+                                loading = false
+                            }
+                        })
+                    }
+                    else{
+                        loading=false
+                    }
+                    Log.d("App",errorMessage)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(ColorUtils.primary), contentColor = Color.White)
-
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(ColorUtils.primary),
+                    contentColor = Color.White),
+                enabled = !loading
             ) {
-                Text(text = "Đăng ký ", fontSize = TextSizeUtils.SMALL)
+                Text(text = if(loading) "Đang xử lý" else "Đăng ký", fontSize = TextSizeUtils.SMALL)
+            }
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = TextSizeUtils.SMALL,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navControler.navigate(Navigation.SIGN_IN)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp),

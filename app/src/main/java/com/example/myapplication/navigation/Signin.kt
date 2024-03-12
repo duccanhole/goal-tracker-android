@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
+import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TextSizeUtils.LARGE
 interface LoginCallback {
@@ -129,7 +130,7 @@ fun SigninPage(navController:NavController) {
                     if (errorMessage=="") {
                         onLogin(username = username, password = password, object : LoginCallback {
                             override fun onSuccess() {
-                                navController.navigate("home")
+                                navController.navigate(Navigation.HOME)
                                 // lưu thông tin người dùng, dùng data store
                                 loading = false
 
@@ -167,7 +168,7 @@ fun SigninPage(navController:NavController) {
             ) {
                 Text(text = "Chưa có tài khoản ?")
                 TextButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(Navigation.SIGN_UP) },
                 ) {
                     Text(
                         text = "Đăng ký ngay ",

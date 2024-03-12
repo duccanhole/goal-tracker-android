@@ -48,4 +48,25 @@ object UserRepo {
 
         })
     }
+
+    fun register(username: String,password: String,callback: (SignupReponse?, Throwable?) -> Unit){
+        val payload=SignupRequest(username, password)
+        val call= client?.createUser(payload)
+        call?.enqueue(object : Callback<SignupReponse> {
+            override fun onResponse(call: Call<SignupReponse>, response: Response<SignupReponse>) {
+                if(response.isSuccessful) {
+                    response.body()?.let { callback(it, null) }
+                }
+                else {
+                    callback(null, Exception("Error: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<SignupReponse>, t: Throwable) {
+                callback(null, t)
+            }
+
+        })
+    }
+
 }
