@@ -28,12 +28,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+fun formatNotifyTime(value: String): String {
+    val inputDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val outputDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    // Parse input date string into Date object
+    val inputDate = inputDateFormat.parse(value)
+
+    // Format Date object into output date string
+    return outputDateFormat.format(inputDate)
+}
 
 @Composable()
-@Preview()
-fun GoalItem() {
+fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit) {
     Box(
         modifier = Modifier.background(
             color = Color(ColorUtils.accent),
@@ -44,8 +57,10 @@ fun GoalItem() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = false,
-                onCheckedChange = {},
+                checked = goalItem.isDone,
+                onCheckedChange = {
+                    onChecked(it)
+                },
                 colors = CheckboxDefaults.colors(
                     uncheckedColor = Color.White
                 )
@@ -53,18 +68,24 @@ fun GoalItem() {
             Box(modifier = Modifier.weight(1f)) {
                 Column {
                     Text(
-                        text = "Goal name",
+                        text = goalItem.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = TextSizeUtils.MEDIUM,
                         color = Color.White
                     )
-                    Row {
-                        Icon(
-                            Icons.Rounded.Notifications,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                        Text(text = "7:30", fontSize = TextSizeUtils.MEDIUM, color = Color.White)
+                    if (goalItem.hasNotfication) {
+                        Row {
+                            Icon(
+                                Icons.Rounded.Notifications,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                            Text(
+                                text = formatNotifyTime(goalItem.notifyAt),
+                                fontSize = TextSizeUtils.MEDIUM,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }

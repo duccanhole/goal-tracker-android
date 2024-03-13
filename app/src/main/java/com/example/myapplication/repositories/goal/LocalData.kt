@@ -4,12 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.util.UUID
 
 class LocalData {
     private val PERMISSION_REQUEST_CODE = 123
@@ -49,7 +51,7 @@ class LocalData {
                 val goal = Goal(
                     _id = jsonOject.getString("_id"),
                     name = jsonOject.getString("name"),
-                    user = jsonOject.getString("user"),
+                    user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
                     isDone = jsonOject.getBoolean("isDone"),
                     hasNotfication = jsonOject.getBoolean("hasNotification"),
                     notifyAt = jsonOject.getString("notifyAt"),
@@ -64,7 +66,7 @@ class LocalData {
     public fun addLocalGoal(goal: Goal) {
         val jsonObject = JSONObject()
         jsonObject.apply {
-            put("_id", jsonData?.length().toString())
+            put("_id", UUID.randomUUID().toString())
             put("name", goal.name)
             put("user", goal.user)
             put("isDone", false)
@@ -122,10 +124,11 @@ class LocalData {
         return try {
             val file = File(context?.filesDir, fileName)
             val text = file.readText()
+            Log.d("App", "read file result: $text")
             JSONArray(text)
         } catch (e: IOException) {
             e.printStackTrace()
-            null
+            return JSONArray()
         }
     }
 

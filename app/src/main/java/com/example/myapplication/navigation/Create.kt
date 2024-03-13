@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
@@ -31,11 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.repositories.goal.Goal
+import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
@@ -52,16 +55,19 @@ fun convertToISOString(hours: Int, minutes: Int): String {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-fun onSave(goal: Goal, notifyTime: TimePickerState) {
-    if(goal.hasNotfication) {
-        val payload = goal.copy(notifyAt = convertToISOString(notifyTime.hour, notifyTime.minute))
-        println(payload.toString())
+fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
+    var payload = goal
+    if (goal.hasNotfication) {
+        payload = goal.copy(notifyAt = convertToISOString(notifyTime.hour, notifyTime.minute))
     }
+    val localData = LocalData(context)
+    localData.addLocalGoal(payload)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun CreateGoalPage(navController: NavController) {
+    val context = LocalContext.current
     var goalData by remember {
         mutableStateOf(Goal(_id = "0", name = "", notifyAt = "", createdAt = "", user = null))
     }
@@ -73,7 +79,8 @@ fun CreateGoalPage(navController: NavController) {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(15.dp))
-        TextField(value = goalData.name,
+        TextField(
+            value = goalData.name,
             onValueChange = { goalData = goalData.copy(name = it) },
             label = {
                 Text("Tiêu đề")
@@ -105,7 +112,7 @@ fun CreateGoalPage(navController: NavController) {
         if (goalData.hasNotfication) TimePicker(
             state = notifyAt,
             modifier = Modifier.fillMaxWidth(),
-            colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary))
+            colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
         )
         Button(
             onClick = {
@@ -123,7 +130,10 @@ fun CreateGoalPage(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(5.dp))
         Button(
-            onClick = { onSave(goalData, notifyAt) },
+            onClick = {
+                onSave(context, goalData, notifyAt)
+                navController.navigate(Navigation.HOME)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp),
