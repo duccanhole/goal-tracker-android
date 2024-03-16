@@ -43,7 +43,7 @@ interface SignupCallback {
     fun onError(errormessage: String)
 }
 fun onSignup(username: String, password: String,callback: SignupCallback) {
-    UserRepo.getInstance().login(username, password) { res, err ->
+    UserRepo.getInstance().register(username, password) { res, err ->
         run {
             if (err != null) {
                 Log.d("Apps",err.message.toString())

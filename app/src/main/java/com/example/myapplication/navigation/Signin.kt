@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -48,8 +49,10 @@ import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TextSizeUtils.LARGE
+import android.content.SharedPreferences
+
 interface LoginCallback {
-    fun onSuccess()
+    fun onSuccess(token:String)
     fun onError(errormessage: String)
 }
 fun onLogin(username: String, password: String,callback: LoginCallback) {
@@ -59,8 +62,7 @@ fun onLogin(username: String, password: String,callback: LoginCallback) {
                 callback.onError("Đã xảy ra lỗi khi đăng nhập")
 
             } else {
-                callback.onSuccess()
-
+                callback.onSuccess(res?.result?.token.toString())
             }
         }
     }
@@ -129,11 +131,15 @@ fun SigninPage(navController:NavController) {
                     loading = true
                     if (errorMessage=="") {
                         onLogin(username = username, password = password, object : LoginCallback {
-                            override fun onSuccess() {
+                            override fun onSuccess(token: String) {
                                 navController.navigate(Navigation.HOME)
                                 // lưu thông tin người dùng, dùng data store
                                 loading = false
-
+//                                val sharedPreferences = context.getSharedPreferences("userinfor", Context.MODE_PRIVATE)
+//                                val editor = sharedPreferences.edit()
+//                                editor.putString("key", "value")
+//                                editor.apply()
+                                Log.d("Apps",token)
                             }
 
                             override fun onError(errormessage: String) {
