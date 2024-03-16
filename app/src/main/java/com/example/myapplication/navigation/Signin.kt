@@ -50,8 +50,8 @@ import com.example.myapplication.utils.TextSizeUtils.LARGE
 fun onLogin(username: String, password: String) {
     UserRepo.getInstance().login(username, password) { res, err ->
         run {
-            Log.d("App", res.toString())
-            Log.d("App", "error:" + err?.message)
+            if(res !== null) Log.d("App", res.toString())
+            if(err !== null) Log.d("App", "error:" + err?.message)
         }
     }
 }

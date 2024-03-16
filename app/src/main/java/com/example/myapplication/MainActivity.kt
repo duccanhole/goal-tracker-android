@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.navigation.CreateGoalPage
 import com.example.myapplication.navigation.HomePage
 import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage
@@ -60,7 +61,7 @@ fun App() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Navigation.SIGN_IN,
+            startDestination = Navigation.HOME,
             modifier = Modifier.weight(1f)
         ) {
             composable(Navigation.HOME) { HomePage(navController) }
@@ -68,6 +69,7 @@ fun App() {
             composable(Navigation.SETTING) { SettingPage() }
             composable(Navigation.SIGN_IN) { SigninPage() }
             composable(Navigation.SIGN_UP) { SignupPage() }
+            composable(Navigation.CREAT_GOAL) { CreateGoalPage(navController)}
         }
 //        val currentDestination = navController.currentDestination?.route
         if (currentDestination?.destination?.route !in listOf(Navigation.SIGN_IN, Navigation.SIGN_UP)) {
