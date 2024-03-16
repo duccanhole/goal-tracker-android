@@ -100,6 +100,7 @@ class LocalData {
             }
             if (index >= 0 && index < it.length()) {
                 it.put(index, jsonObject)
+                write(it)
             }
         }
     }
@@ -133,8 +134,13 @@ class LocalData {
             }
             if (index >= 0 && index < it.length()) {
                 it.remove(index)
+                write(it)
             }
         }
+    }
+
+    public fun clear() {
+        write(JSONArray())
     }
 
     private fun read(): JSONArray? {

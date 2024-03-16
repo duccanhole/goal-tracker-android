@@ -63,7 +63,8 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
                     onChecked(it)
                 },
                 colors = CheckboxDefaults.colors(
-                    uncheckedColor = Color.White
+                    uncheckedColor = Color.White,
+                    checkedColor = Color(ColorUtils.secondary)
                 )
             )
             Box(modifier = Modifier.weight(1f)) {

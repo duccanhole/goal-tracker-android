@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -29,14 +30,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.ViewModel
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 
-fun removeLocalGoal(localData: LocalData, goal: Goal, list: List<Goal>): List<Goal> {
+fun removeLocalGoal(localData: LocalData, goal: Goal) {
     localData.remove(goal)
-    return list.filter { item -> item._id != goal._id }
+}
+
+fun updateLocalGoal(localData: LocalData, goal: Goal) {
+    localData.update(goal)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +51,7 @@ fun GoalList(isDone: Boolean = false) {
     val context = LocalContext.current
     val localData = LocalData(context)
     var list = remember {
-        localData.get().toList()
+        mutableStateListOf<Goal>(*localData.get())
     }
 
     var dialogConfirm = remember {
@@ -55,6 +60,7 @@ fun GoalList(isDone: Boolean = false) {
     var goalSelected = remember {
         mutableStateOf<Goal?>(null)
     }
+
     Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
         Row {
             Button(
@@ -76,10 +82,15 @@ fun GoalList(isDone: Boolean = false) {
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
             items(list) { item ->
-                GoalItem(item, onChecked = {}, onDelete = {
-                    goalSelected.value = item
-                    dialogConfirm.value = true
-                })
+                GoalItem(item, onChecked = {
+                    val newItem = item.copy(isDone = it)
+                    updateLocalGoal(localData, newItem)
+                    list[list.indexOf(item)] = newItem
+                },
+                    onDelete = {
+                        goalSelected.value = item
+                        dialogConfirm.value = true
+                    })
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }
@@ -107,7 +118,9 @@ fun GoalList(isDone: Boolean = false) {
                 )
                 Text(
                     text = "Dữ liệu sau khi xóa sẽ không thể khôi phục",
-                    fontSize = TextSizeUtils.MEDIUM
+                    fontSize = TextSizeUtils.MEDIUM,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Button(
                     onClick = {
@@ -125,7 +138,8 @@ fun GoalList(isDone: Boolean = false) {
                 }
                 Button(
                     onClick = {
-                        list = removeLocalGoal(localData, goalSelected.value!!, list)
+                        removeLocalGoal(localData, goalSelected.value!!)
+                        list.remove(goalSelected.value)
                         goalSelected.value = null
                         dialogConfirm.value = false
                     },
