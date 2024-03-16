@@ -43,7 +43,7 @@ class LocalData {
         )
     }
 
-    public fun getLocalGoal(): Array<Goal> {
+    public fun get(): Array<Goal> {
         var result = emptyArray<Goal>()
         jsonData?.let {
             for (i in 0 until it.length()) {
@@ -63,7 +63,7 @@ class LocalData {
         return result
     }
 
-    public fun addLocalGoal(goal: Goal) {
+    public fun add(goal: Goal) {
         val jsonObject = JSONObject()
         jsonObject.apply {
             put("_id", UUID.randomUUID().toString())
@@ -78,7 +78,7 @@ class LocalData {
         jsonData?.let { write(it) }
     }
 
-    public fun updateLocalGoal(goal: Goal) {
+    public fun update(goal: Goal) {
         var index = -1
         val jsonObject = JSONObject()
         jsonObject.apply {
@@ -104,12 +104,29 @@ class LocalData {
         }
     }
 
-    public fun removeLocalGoal(goal: Goal) {
+    public fun remove(goal: Goal) {
         var index = -1
         jsonData?.let {
             for (i in 0 until it.length()) {
                 val jsonOject = it.getJSONObject(i);
                 if (goal._id == jsonOject.getString("_id")) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index >= 0 && index < it.length()) {
+                it.remove(index)
+                write(it)
+            }
+        }
+    }
+
+    public fun remove(id: String) {
+        var index = -1
+        jsonData?.let {
+            for (i in 0 until it.length()) {
+                val jsonOject = it.getJSONObject(i);
+                if (id == jsonOject.getString("_id")) {
                     index = i;
                     break;
                 }

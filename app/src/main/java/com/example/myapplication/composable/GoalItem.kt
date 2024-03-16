@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.repositories.goal.Goal
@@ -46,7 +47,7 @@ fun formatNotifyTime(value: String): String {
 }
 
 @Composable()
-fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit) {
+fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -> Unit) {
     Box(
         modifier = Modifier.background(
             color = Color(ColorUtils.accent),
@@ -71,7 +72,9 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit) {
                         text = goalItem.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = TextSizeUtils.MEDIUM,
-                        color = Color.White
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     if (goalItem.hasNotfication) {
                         Row {
@@ -95,7 +98,7 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit) {
                 Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onDelete() },
             ) {
                 Icon(Icons.Rounded.Delete, contentDescription = null, tint = Color(0xFFCC0000))
             }

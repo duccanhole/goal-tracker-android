@@ -61,7 +61,7 @@ fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
         payload = goal.copy(notifyAt = convertToISOString(notifyTime.hour, notifyTime.minute))
     }
     val localData = LocalData(context)
-    localData.addLocalGoal(payload)
+    localData.add(payload)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
