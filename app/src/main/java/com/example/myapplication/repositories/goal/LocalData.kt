@@ -43,7 +43,7 @@ class LocalData {
         )
     }
 
-    public fun get(): Array<Goal> {
+    public fun getAll(): Array<Goal> {
         var result = emptyArray<Goal>()
         jsonData?.let {
             for (i in 0 until it.length()) {
@@ -61,6 +61,27 @@ class LocalData {
             }
         }
         return result
+    }
+
+    public fun get(id: String): Goal? {
+        jsonData?.let {
+            for (i in 0 until it.length()) {
+                val jsonOject = it.getJSONObject(i);
+                if(jsonOject.getString("_id") == id) {
+                    val goal = Goal(
+                        _id = jsonOject.getString("_id"),
+                        name = jsonOject.getString("name"),
+                        user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
+                        isDone = jsonOject.getBoolean("isDone"),
+                        hasNotfication = jsonOject.getBoolean("hasNotification"),
+                        notifyAt = jsonOject.getString("notifyAt"),
+                        createdAt = jsonOject.getString("createdAt")
+                    )
+                    return goal
+                }
+            }
+        }
+        return null
     }
 
     public fun add(goal: Goal) {
@@ -100,8 +121,11 @@ class LocalData {
             }
             if (index >= 0 && index < it.length()) {
                 it.put(index, jsonObject)
-                write(it)
             }
+            else {
+                it.put(jsonObject)
+            }
+            write(it)
         }
     }
 

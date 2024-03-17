@@ -32,22 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
+import com.example.myapplication.utils.TimeUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-fun formatNotifyTime(value: String): String {
-    val inputDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    val outputDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-    // Parse input date string into Date object
-    val inputDate = inputDateFormat.parse(value)
-
-    // Format Date object into output date string
-    return outputDateFormat.format(inputDate)
-}
-
 @Composable()
-fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -> Unit) {
+fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -> Unit, onEdit: () -> Unit) {
     Box(
         modifier = Modifier.background(
             color = Color(ColorUtils.accent),
@@ -85,7 +75,7 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
                                 tint = Color.White
                             )
                             Text(
-                                text = formatNotifyTime(goalItem.notifyAt),
+                                text = TimeUtils.formatDate(goalItem.notifyAt),
                                 fontSize = TextSizeUtils.MEDIUM,
                                 color = Color.White
                             )
@@ -94,7 +84,7 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
                 }
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onEdit() },
             ) {
                 Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
             }

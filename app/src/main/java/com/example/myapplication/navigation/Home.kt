@@ -51,7 +51,7 @@ fun HomePage(navController: NavController) {
                 .padding(it)
         ) {
             DashBoardPreview()
-            GoalList()
+            GoalList(navController)
         }
     }
 }
