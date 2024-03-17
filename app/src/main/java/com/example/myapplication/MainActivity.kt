@@ -14,11 +14,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.navigation.CreateGoalPage
 import com.example.myapplication.navigation.HomePage
 import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage
 import com.example.myapplication.navigation.SignupPage
 import com.example.myapplication.navigation.StatisticPage
+import com.example.myapplication.navigation.UpdateGoalPage
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 
@@ -65,9 +67,20 @@ fun App() {
             composable(Navigation.SETTING) { SettingPage() }
             composable(Navigation.SIGN_IN) { SigninPage(navController) }
             composable(Navigation.SIGN_UP) { SignupPage(navController) }
+            composable(Navigation.CREAT_GOAL) { CreateGoalPage(navController) }
+            composable(Navigation.UPDATE_GOAL) { backStackEntry ->
+                UpdateGoalPage(
+                    navController,
+                    backStackEntry.arguments?.getString("id")
+                )
+            }
         }
 //        val currentDestination = navController.currentDestination?.route
-        if (currentDestination?.destination?.route !in listOf(Navigation.SIGN_IN, Navigation.SIGN_UP)) {
+        if (currentDestination?.destination?.route !in listOf(
+                Navigation.SIGN_IN,
+                Navigation.SIGN_UP
+            )
+        ) {
             BottomBar(navController)
         }
     }
