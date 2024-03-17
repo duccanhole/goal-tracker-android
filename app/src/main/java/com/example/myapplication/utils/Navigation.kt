@@ -7,4 +7,5 @@ object Navigation {
     val SIGN_IN = "sign-in"
     val SIGN_UP = "sign-up"
     val CREAT_GOAL = "create-goal"
+    val UPDATE_GOAL = "update/{id}"
 }

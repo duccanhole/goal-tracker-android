@@ -2,15 +2,12 @@ package com.example.myapplication
 
 import BottomBar
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
@@ -23,6 +20,7 @@ import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage
 import com.example.myapplication.navigation.SignupPage
 import com.example.myapplication.navigation.StatisticPage
+import com.example.myapplication.navigation.UpdateGoalPage
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 
@@ -69,10 +67,20 @@ fun App() {
             composable(Navigation.SETTING) { SettingPage() }
             composable(Navigation.SIGN_IN) { SigninPage() }
             composable(Navigation.SIGN_UP) { SignupPage() }
-            composable(Navigation.CREAT_GOAL) { CreateGoalPage(navController)}
+            composable(Navigation.CREAT_GOAL) { CreateGoalPage(navController) }
+            composable(Navigation.UPDATE_GOAL) { backStackEntry ->
+                UpdateGoalPage(
+                    navController,
+                    backStackEntry.arguments?.getString("id")
+                )
+            }
         }
 //        val currentDestination = navController.currentDestination?.route
-        if (currentDestination?.destination?.route !in listOf(Navigation.SIGN_IN, Navigation.SIGN_UP)) {
+        if (currentDestination?.destination?.route !in listOf(
+                Navigation.SIGN_IN,
+                Navigation.SIGN_UP
+            )
+        ) {
             BottomBar(navController)
         }
     }
