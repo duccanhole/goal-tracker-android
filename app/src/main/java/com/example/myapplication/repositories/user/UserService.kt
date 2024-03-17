@@ -17,7 +17,7 @@ data class LoginResponse (
 
 data class LoginResult (
     val token: String,
-    val result: LoginResult
+    val result: UserData
 )
 data class SigupResult(
     val result: LoginResult

@@ -1,8 +1,7 @@
 package com.example.myapplication.navigation
 
-import android.content.Context
+import UserInfo
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,18 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,24 +29,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
-import com.example.myapplication.utils.TextSizeUtils.LARGE
-import android.content.SharedPreferences
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.repositories.goal.LocalData
 
 interface LoginCallback {
-    fun onSuccess(token:String)
+    fun onSuccess(Token:String,Id:String,Username:String)
     fun onError(errormessage: String)
 }
 fun onLogin(username: String, password: String,callback: LoginCallback) {
@@ -62,8 +52,16 @@ fun onLogin(username: String, password: String,callback: LoginCallback) {
                 callback.onError("Đã xảy ra lỗi khi đăng nhập")
 
             } else {
-                callback.onSuccess(res?.result?.token.toString())
+                Log.d("App","success")
+                callback.onSuccess(
+
+                    res?.result?.token.toString(),
+                    res?.result?.result?._id.toString(),
+                    res?.result?.result?.username.toString()
+                )
+
             }
+
         }
     }
 }
@@ -75,6 +73,7 @@ fun checkvalidate(username: String,password: String):String{
 }
 @Composable()
 fun SigninPage(navController:NavController) {
+    val context= LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -131,15 +130,23 @@ fun SigninPage(navController:NavController) {
                     loading = true
                     if (errorMessage=="") {
                         onLogin(username = username, password = password, object : LoginCallback {
-                            override fun onSuccess(token: String) {
+                            override fun onSuccess(Token: String,Id: String,Username: String) {
                                 navController.navigate(Navigation.HOME)
                                 // lưu thông tin người dùng, dùng data store
+                                val localdata=LocalData(context,  "userinfo.json")
+                                if(localdata.checkPermission()){
+                                    val user=UserInfo(
+                                        token=Token,
+                                        id = Id,
+                                        username=Username
+                                    )
+                                    localdata.addUserInfo(user)
+
+                                }else{
+                                    localdata.requestPermission()
+                                }
                                 loading = false
-//                                val sharedPreferences = context.getSharedPreferences("userinfor", Context.MODE_PRIVATE)
-//                                val editor = sharedPreferences.edit()
-//                                editor.putString("key", "value")
-//                                editor.apply()
-                                Log.d("Apps",token)
+
                             }
 
                             override fun onError(errormessage: String) {
