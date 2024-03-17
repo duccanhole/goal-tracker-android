@@ -13,13 +13,14 @@ import java.io.File
 import java.io.IOException
 import java.util.UUID
 
-class LocalData {
+class LocalData() {
     private val PERMISSION_REQUEST_CODE = 123
     private var context: Context? = null
-    private val fileName: String = "local_data.json"
+    private var fileName: String = "local_data.json"
+
     private var jsonData: JSONArray? = null
 
-    constructor(context: Context) {
+    constructor(context: Context) : this() {
         this.context = context
         jsonData = read()
     }
@@ -171,7 +172,7 @@ class LocalData {
         return try {
             val file = File(context?.filesDir, fileName)
             val text = file.readText()
-            Log.d("App", "read file result: $text")
+            Log.d("App", "read file userData: $text")
             JSONArray(text)
         } catch (e: IOException) {
             e.printStackTrace()
