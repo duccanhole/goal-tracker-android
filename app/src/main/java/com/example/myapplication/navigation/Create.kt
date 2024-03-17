@@ -60,7 +60,7 @@ fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
     if (goal.hasNotfication) {
         payload = goal.copy(notifyAt = convertToISOString(notifyTime.hour, notifyTime.minute))
     }
-    val localData = LocalData(context,"local_data.json")
+    val localData = LocalData(context)
     localData.add(payload)
 }
 

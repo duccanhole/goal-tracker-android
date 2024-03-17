@@ -44,7 +44,7 @@ fun removeLocalGoal(localData: LocalData, goal: Goal, list: List<Goal>): List<Go
 @Composable()
 fun GoalList(isDone: Boolean = false) {
     val context = LocalContext.current
-    val localData = LocalData(context,"local_data.json")
+    val localData = LocalData(context)
     var list = remember {
         localData.get().toList()
     }

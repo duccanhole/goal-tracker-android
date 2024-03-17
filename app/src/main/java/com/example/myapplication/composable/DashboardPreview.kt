@@ -19,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 
@@ -31,18 +33,26 @@ import com.example.myapplication.utils.TextSizeUtils
 @Composable()
 @Preview()
 fun DashBoardPreview(name: String = "Guest") {
+    val context = LocalContext.current
+    val userLocal = LocalDataUser(context)
+    val userInfor = userLocal.getUser()
     Column(modifier = Modifier.padding(20.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Icon(Icons.Rounded.AccountCircle, contentDescription = null, modifier = Modifier.size(50.dp))
+            Icon(
+                Icons.Rounded.AccountCircle,
+                contentDescription = null,
+                modifier = Modifier.size(50.dp)
+            )
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Hello, $name", fontSize = TextSizeUtils.LARGE, modifier = Modifier
+                    text = "Xin chào, ${if (userInfor?.username.isNullOrEmpty()) "tài khoản ẩn danh" else userInfor!!.username}",
+                    fontSize = TextSizeUtils.LARGE,
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 10.dp)
-                    ,
+                        .padding(start = 10.dp),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -53,8 +63,7 @@ fun DashBoardPreview(name: String = "Guest") {
                 progress = 0.56.toFloat(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(10.dp)
-                ,
+                    .height(10.dp),
                 color = Color(ColorUtils.primary)
             )
         }

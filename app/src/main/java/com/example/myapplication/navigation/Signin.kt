@@ -1,6 +1,5 @@
 package com.example.myapplication.navigation
 
-import UserInfo
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,9 +36,10 @@ import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.ui.platform.LocalContext
-import com.example.myapplication.repositories.goal.LocalData
+import com.example.myapplication.repositories.user.LocalDataUser
+import com.example.myapplication.repositories.user.LoginResult
+import com.example.myapplication.repositories.user.UserData
 
 interface LoginCallback {
     fun onSuccess(Token:String,Id:String,Username:String)
@@ -52,12 +52,11 @@ fun onLogin(username: String, password: String,callback: LoginCallback) {
                 callback.onError("Đã xảy ra lỗi khi đăng nhập")
 
             } else {
-                Log.d("App","success")
+                Log.d("App","login resul: ${res.toString()}")
                 callback.onSuccess(
-
                     res?.result?.token.toString(),
-                    res?.result?.result?._id.toString(),
-                    res?.result?.result?.username.toString()
+                    res?.result?.userData?._id.toString(),
+                    res?.result?.userData?.username.toString()
                 )
 
             }
@@ -133,18 +132,17 @@ fun SigninPage(navController:NavController) {
                             override fun onSuccess(Token: String,Id: String,Username: String) {
                                 navController.navigate(Navigation.HOME)
                                 // lưu thông tin người dùng, dùng data store
-                                val localdata=LocalData(context,  "userinfo.json")
-                                if(localdata.checkPermission()){
-                                    val user=UserInfo(
-                                        token=Token,
-                                        id = Id,
-                                        username=Username
-                                    )
-                                    localdata.addUserInfo(user)
 
+                                val localData=LocalDataUser(context)
+                                if(localData.checkPermission()){
+                                    val user=LoginResult(Token, UserData(Id,Username))
+                                    Log.d("App", user.toString())
+                                    localData.setUser(user)
+//                                localData.clear()
                                 }else{
-                                    localdata.requestPermission()
+                                    localData.requestPermission()
                                 }
+
                                 loading = false
 
                             }
@@ -154,6 +152,9 @@ fun SigninPage(navController:NavController) {
                                 loading = false
                             }
                         })
+                    }
+                    else {
+                        loading = false
                     }
                 },
                 modifier = Modifier

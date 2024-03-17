@@ -1,6 +1,5 @@
 package com.example.myapplication.repositories.goal
 
-import UserInfo
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -18,11 +17,11 @@ class LocalData() {
     private val PERMISSION_REQUEST_CODE = 123
     private var context: Context? = null
     private var fileName: String = "local_data.json"
+
     private var jsonData: JSONArray? = null
 
-    constructor(context: Context,filename:String) : this() {
+    constructor(context: Context) : this() {
         this.context = context
-        this.fileName=fileName
         jsonData = read()
     }
 
@@ -44,20 +43,7 @@ class LocalData() {
             PERMISSION_REQUEST_CODE
         )
     }
-    public  fun getUserInfo():Array<UserInfo>{
-        var result= emptyArray<UserInfo>()
-        return  result
-    }
-    public fun addUserInfo(userInfo: UserInfo){
-        val jsonObject = JSONObject()
-        jsonObject.apply {
-            put("token", userInfo.token)
-            put("id",userInfo.id )
-            put("username", userInfo.username)
-        }
-        jsonData?.put(jsonObject)
-        jsonData?.let { write(it) }
-    }
+
     public fun get(): Array<Goal> {
         var result = emptyArray<Goal>()
         jsonData?.let {
@@ -156,7 +142,7 @@ class LocalData() {
         return try {
             val file = File(context?.filesDir, fileName)
             val text = file.readText()
-            Log.d("App", "read file result: $text")
+            Log.d("App", "read file userData: $text")
             JSONArray(text)
         } catch (e: IOException) {
             e.printStackTrace()
