@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable()
-fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -> Unit, onEdit: () -> Unit) {
+fun GoalItem(goalItem: Goal, loading: Boolean = false, onChecked: (value: Boolean) -> Unit, onDelete: () -> Unit, onEdit: () -> Unit) {
     Box(
         modifier = Modifier.background(
             color = Color(ColorUtils.accent),
@@ -55,7 +55,8 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
                 colors = CheckboxDefaults.colors(
                     uncheckedColor = Color.White,
                     checkedColor = Color(ColorUtils.secondary)
-                )
+                ),
+                enabled = !loading
             )
             Box(modifier = Modifier.weight(1f)) {
                 Column {
@@ -85,11 +86,13 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
             }
             IconButton(
                 onClick = { onEdit() },
+                enabled = !loading
             ) {
                 Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
             }
             IconButton(
                 onClick = { onDelete() },
+                enabled = !loading
             ) {
                 Icon(Icons.Rounded.Delete, contentDescription = null, tint = Color(0xFFCC0000))
             }

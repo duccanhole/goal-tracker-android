@@ -1,6 +1,7 @@
 package com.example.myapplication.repositories.user
 
 import android.util.Log
+import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.utils.BaseUrl
 import org.json.JSONObject
 import retrofit2.Call
@@ -69,5 +70,4 @@ object UserRepo {
 
         })
     }
-
 }
