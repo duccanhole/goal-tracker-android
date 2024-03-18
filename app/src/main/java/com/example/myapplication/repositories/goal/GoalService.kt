@@ -1,5 +1,6 @@
 package com.example.myapplication.repositories.goal
 
+import retrofit2.Call
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -17,9 +18,13 @@ data class Goal(
     val createdAt: String,
 )
 
-class GoalService {
+data class Response<T>(
+    val result: T
+)
+
+interface GoalService {
     @GET("/goal/today")
-    fun getGoalToday(){}
+    fun getGoalToday(): Call<Response<Array<Goal>>>
 
     @GET("/goal/{id}")
     fun getGoalDetail(@Path("id") id: String){}
