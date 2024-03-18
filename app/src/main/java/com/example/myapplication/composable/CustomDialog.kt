@@ -23,6 +23,7 @@ fun CustomDialog(
     onDismissRequest: () -> Unit,
     title: String = "",
     subtitle: String = "",
+    Body: @Composable (() -> Unit)? = null,
     ConfirmBtn: @Composable (() -> Unit)? = null,
     DeclineBtn: @Composable (() -> Unit)? = null) {
     Dialog(onDismissRequest = onDismissRequest) {
@@ -47,6 +48,7 @@ fun CustomDialog(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+            Body?.invoke()
             DeclineBtn?.invoke()
             ConfirmBtn?.invoke()
         }
