@@ -44,6 +44,7 @@ class LocalDataUser() {
 
     public fun getUser(): UserData? {
         jsonData?.let {
+            if(it.length() == 0) return null
             val user = UserData(username = it.getString("username"), _id = it.getString("_id"))
             return user
         }
@@ -52,6 +53,7 @@ class LocalDataUser() {
 
     public fun getToken(): String? {
         jsonData?.let {
+            if(it.length() == 0) return null
             return it.getString("token")
         }
         return null
