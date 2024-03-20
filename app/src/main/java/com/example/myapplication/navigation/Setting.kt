@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import CustomNotification
 import android.graphics.drawable.Icon
 import android.util.Log
 import android.widget.Toast
@@ -52,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.composable.CustomDialog
 import com.example.myapplication.composable.DashBoardPreview
 import com.example.myapplication.composable.removeLocalGoal
@@ -60,6 +62,8 @@ import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
+import java.util.Calendar
+
 interface ChangePassCallback {
     fun onSuccess(result:String)
     fun onError(errormessage: String)
@@ -118,6 +122,12 @@ fun ItemSetting( name:String,icon: ImageVector,onClick: () -> Unit,color:Color= 
 }
 @Composable()
 fun SettingPage(navController: NavController) {
+    var notificationTime by remember { mutableStateOf(Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 10)
+        set(Calendar.MINUTE, 18)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }.timeInMillis) }
     val context= LocalContext.current
     val userLocal = LocalDataUser(context)
     val userInfor = userLocal.getUser()
@@ -293,10 +303,14 @@ fun SettingPage(navController: NavController) {
                        Log.d("App",token)
                        if(errorMessage==""){
 
-                           onChangePassword("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUxZWQ0ZjljMDA1NWI3NmFjNDUwNGMiLCJ1c2VybmFtZSI6InRlc3QiLCJwYXNzd29yZCI6IiQyYiQxMCR1S1AxV2kyYnhBbG1PaGZTbW5PbmYuR0c5eDZibERzeHZvYlJVZUwzYjRheFRQT1pSY055VyIsIl9fdiI6MCwiaWF0IjoxNzEwNzc3NDgzfQ.Q3dtDI_ZeM8sjY6_MAwz00meux6cohoPrpOLiOpy0ww",userid,oldPassword,newPassword,object :ChangePassCallback{
+                           onChangePassword(token,userid,oldPassword,newPassword,object :ChangePassCallback{
                                override fun onSuccess(result: String) {
 
                                    Toast.makeText(context, "Đổi mật khẩu thành công!!!", Toast.LENGTH_SHORT).show()
+                                   loading=false
+                                   showdialog=false
+                                   oldPassword=""
+                                   newPassword=""
                                }
 
                                override fun onError(errormessage: String) {
@@ -322,8 +336,11 @@ fun SettingPage(navController: NavController) {
                ) {
                   Text(text = if(loading) "Đang xử lý" else "Đổi mật khẩu")
                }
+
            }
        )
     }
+    CustomNotification(context, "Custom Notification", "This is a custom notification",R.drawable.ic_notifications_black_24dp, notificationTime)
+
 
 }

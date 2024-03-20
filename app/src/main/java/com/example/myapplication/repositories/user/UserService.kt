@@ -3,6 +3,7 @@ package com.example.myapplication.repositories.user
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -48,6 +49,7 @@ interface UserService {
     fun login(@Body payload: LoginRequest): Call<LoginResponse>
 
     @PUT("/user/change-password")
-    fun changePass(@Header("token") token: String, @Body payload:ChangePassRequest):Call<ChangePassResponse>
+    @Headers("token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUxZWQ0ZjljMDA1NWI3NmFjNDUwNGMiLCJ1c2VybmFtZSI6InRlc3QiLCJwYXNzd29yZCI6IiQyYiQxMCRkM1ZzaGlXTjNoZTdoR0c3czh3MFF1TENjZzVjM2NJS3poY0FlakxqZVdYOUJFaUlRN3lzLiIsIl9fdiI6MCwiaWF0IjoxNzEwODk2MTUyfQ.tB3iBSHQdlY8Sp31Vps_SMS-tpVNnlcMQQUiBCnY4IM")
+    fun changePass( @Body payload:ChangePassRequest):Call<ChangePassResponse>
 
 }
