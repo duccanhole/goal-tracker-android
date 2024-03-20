@@ -70,4 +70,30 @@ object UserRepo {
         })
     }
 
+
+    fun ChangePassword(token:String,userId:String,oldPassword:String,newPassword:String ,callback: (ChangePassResponse?, Throwable?) -> Unit){
+        val payload=ChangePassRequest(userId, oldPassword, newPassword)
+        val call= client?.changePass(payload)
+        call?.enqueue(object :Callback<ChangePassResponse>{
+            override fun onResponse(
+                call: Call<ChangePassResponse>,
+                response: Response<ChangePassResponse>
+            ) {
+                if(response.isSuccessful) {
+                    response.body()?.let { callback(it, null) }
+                    Log.d("App","thanh cong ")
+                }
+                else {
+                    callback(null, Exception("Error: ${response.code()}"))
+                    Log.d("App","Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ChangePassResponse>, t: Throwable) {
+                callback(null, t)
+            }
+
+        })
+    }
+
 }

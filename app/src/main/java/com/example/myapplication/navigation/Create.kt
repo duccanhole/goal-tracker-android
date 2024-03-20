@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -65,78 +66,78 @@ fun CreateGoalPage(navController: NavController) {
         mutableStateOf(Goal(_id = "0", name = "", notifyAt = "", createdAt = "", user = null))
     }
     val notifyAt = rememberTimePickerState(0, 0, is24Hour = true)
-    Column(modifier = Modifier.padding(20.dp)) {
-        Text(
+    LazyColumn(modifier = Modifier.padding(20.dp)) {
+        item { Text(
             text = "Thêm mục tiêu mới",
             fontSize = TextSizeUtils.LARGE,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(15.dp))
-        TextField(
-            value = goalData.name,
-            onValueChange = { goalData = goalData.copy(name = it) },
-            label = {
-                Text("Tiêu đề")
-            },
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(8.dp))
-                .background(Color.White)
-                .fillMaxWidth(),
-            textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Row {
-            Text(
-                text = "Thông báo",
-                modifier = Modifier.weight(1f),
-                fontSize = TextSizeUtils.MEDIUM
-            )
-            Switch(
-                checked = goalData.hasNotfication,
-                onCheckedChange = {
-                    goalData = goalData.copy(hasNotfication = it)
+            Spacer(modifier = Modifier.height(15.dp))
+            TextField(
+                value = goalData.name,
+                onValueChange = { goalData = goalData.copy(name = it) },
+                label = {
+                    Text("Tiêu đề")
                 },
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = Color(ColorUtils.primary)
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .background(Color.White)
+                    .fillMaxWidth(),
+                textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row {
+                Text(
+                    text = "Thông báo",
+                    modifier = Modifier.weight(1f),
+                    fontSize = TextSizeUtils.MEDIUM
                 )
+                Switch(
+                    checked = goalData.hasNotfication,
+                    onCheckedChange = {
+                        goalData = goalData.copy(hasNotfication = it)
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = Color(ColorUtils.primary)
+                    )
+                )
+            }
+            if (goalData.hasNotfication) TimePicker(
+                state = notifyAt,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
             )
-        }
-        if (goalData.hasNotfication) TimePicker(
-            state = notifyAt,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
-        )
-        Button(
-            onClick = {
-                navController.navigate(Navigation.HOME)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(ColorUtils.accent)
-            )
-        ) {
-            Text(text = "Hủy", fontSize = TextSizeUtils.MEDIUM)
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Button(
-            onClick = {
-                onSave(context, goalData, notifyAt)
-                navController.navigate(Navigation.HOME)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(ColorUtils.primary)
-            )
-        ) {
-            Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
-        }
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.HOME)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                shape = MaterialTheme.shapes.medium,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(ColorUtils.accent)
+                )
+            ) {
+                Text(text = "Hủy", fontSize = TextSizeUtils.MEDIUM)
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            Button(
+                onClick = {
+                    onSave(context, goalData, notifyAt)
+                    navController.navigate(Navigation.HOME)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                shape = MaterialTheme.shapes.medium,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(ColorUtils.primary)
+                )
+            ) {
+                Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
+            } }
     }
 }
 
