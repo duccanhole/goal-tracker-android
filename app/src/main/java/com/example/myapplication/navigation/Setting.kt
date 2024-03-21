@@ -122,12 +122,6 @@ fun ItemSetting( name:String,icon: ImageVector,onClick: () -> Unit,color:Color= 
 }
 @Composable()
 fun SettingPage(navController: NavController) {
-    var notificationTime by remember { mutableStateOf(Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 10)
-        set(Calendar.MINUTE, 18)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis) }
     val context= LocalContext.current
     val userLocal = LocalDataUser(context)
     val userInfor = userLocal.getUser()
@@ -340,7 +334,4 @@ fun SettingPage(navController: NavController) {
            }
        )
     }
-    CustomNotification(context, "Custom Notification", "This is a custom notification",R.drawable.ic_notifications_black_24dp, notificationTime)
-
-
 }

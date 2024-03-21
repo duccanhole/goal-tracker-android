@@ -126,4 +126,7 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
             Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
         }
     }
+    if(!goal.hasNotfication){
+
+    }
 }

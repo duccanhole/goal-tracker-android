@@ -39,4 +39,5 @@ object TimeUtils {
         // Format Date object into output date string
         return outputDateFormat.format(inputDate)
     }
+
 }
