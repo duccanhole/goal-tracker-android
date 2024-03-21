@@ -30,7 +30,7 @@ interface GoalService {
     fun getGoalDetail(@Path("id") id: String){}
 
     @DELETE("/goal/{id}")
-    fun removeGoal(@Path("id") id: String){}
+    fun removeGoal(@Path("id") id: String): Call<Response<String>>
 
     @POST("/goal/create")
     fun createGoal(){}

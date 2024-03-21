@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.navigation.GoalModel
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
@@ -37,12 +38,12 @@ fun updateLocalGoal(localData: LocalData, goal: Goal) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
-fun GoalList(navController: NavController) {
-    val context = LocalContext.current
-    val localData = LocalData(context)
-    var list = remember {
-        mutableStateListOf<Goal>(*localData.getAll())
-    }
+fun GoalList(navController: NavController, goalModel: GoalModel) {
+//    val context = LocalContext.current
+//    val localData = LocalData(context)
+//    var list = remember {
+//        mutableStateListOf<Goal>(*localData.getAll())
+//    }
 
     var dialogConfirm = remember {
         mutableStateOf<Boolean>(false)
@@ -71,11 +72,12 @@ fun GoalList(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
-            items(list) { item ->
+            items(goalModel.list) { item ->
                 GoalItem(item, onChecked = {
-                    val newItem = item.copy(isDone = it)
-                    updateLocalGoal(localData, newItem)
-                    list[list.indexOf(item)] = newItem
+//                    val newItem = item.copy(isDone = it)
+//                    updateLocalGoal(localData, newItem)
+//                    list[list.indexOf(item)] = newItem
+                    goalModel.remove(item)
                 },
                     onDelete = {
                         goalSelected.value = item
@@ -172,10 +174,10 @@ fun GoalList(navController: NavController) {
             ConfirmBtn = {
                 Button(
                     onClick = {
-                        removeLocalGoal(localData, goalSelected.value!!)
-                        list.remove(goalSelected.value)
-                        goalSelected.value = null
-                        dialogConfirm.value = false
+//                        removeLocalGoal(localData, goalSelected.value!!)
+//                        list.remove(goalSelected.value)
+//                        goalSelected.value = null
+//                        dialogConfirm.value = false
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

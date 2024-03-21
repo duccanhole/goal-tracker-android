@@ -1,5 +1,6 @@
 package com.example.myapplication.repositories.goal
 
+import android.util.Log
 import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.BaseUrl
 import okhttp3.OkHttpClient
@@ -10,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class GoalRepo {
+object GoalRepo {
     private var client: GoalService? = null;
     private var instance: GoalRepo? = null
     fun getInstance(token: String? = null): GoalRepo {
@@ -31,12 +32,13 @@ class GoalRepo {
             }
             val retrofit =
                 Retrofit.Builder().baseUrl(BaseUrl.URL)
-                    .addConverterFactory(GsonConverterFactory.create()).client(httpClient.build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(httpClient.build())
                     .build()
             client = retrofit.create(GoalService::class.java)
-            synchronized(UserRepo::class.java) {
+            synchronized(GoalRepo::class.java) {
                 if (instance == null) {
-                    instance = GoalRepo()
+                    instance = GoalRepo
                 }
             }
 
@@ -61,6 +63,28 @@ class GoalRepo {
             }
 
             override fun onFailure(call: Call<Response<Array<Goal>>>, t: Throwable) {
+                t.message?.let { Log.e("App", it) }
+                callback(null, t)
+            }
+        })
+    }
+
+    fun removeGoal(id: String, callback: (Response<String>?, Throwable?) -> Unit) {
+        val call = client?.removeGoal(id)
+        call?.enqueue(object: Callback<Response<String>> {
+            override fun onResponse(
+                call: Call<Response<String>>,
+                response: retrofit2.Response<Response<String>>
+            ) {
+                if(response.isSuccessful) {
+                    callback(response.body(), null)
+                }
+                else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<String>>, t: Throwable) {
                 callback(null, t)
             }
         })

@@ -340,7 +340,5 @@ fun SettingPage(navController: NavController) {
            }
        )
     }
-    CustomNotification(context, "Custom Notification", "This is a custom notification",R.drawable.ic_notifications_black_24dp, notificationTime)
-
-
+//    CustomNotification(context, "Custom Notification", "This is a custom notification",R.drawable.ic_notifications_black_24dp, notificationTime)
 }

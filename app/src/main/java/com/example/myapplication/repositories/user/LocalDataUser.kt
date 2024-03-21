@@ -69,6 +69,7 @@ class LocalDataUser() {
                 put("username", userinfo.userData.username)
             }
             jsonData = jsonObject
+            Log.d("App", "set user result ${jsonData.toString()}")
             jsonData?.let { write(it) }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -95,6 +96,7 @@ class LocalDataUser() {
 
     private fun write(jsonObject: JSONObject) {
         try {
+            Log.d("App", "write file ${jsonObject.toString()}")
             val file = File(context?.filesDir, fileName)
             file.writeText(jsonObject.toString())
         } catch (e: IOException) {

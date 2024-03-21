@@ -1,5 +1,6 @@
 package com.example.myapplication.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
@@ -8,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,16 +26,16 @@ import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 
-class GoalModel: ViewModel() {
-    private var list = mutableStateListOf<Goal>()
-    private val goalRepo = GoalRepo().getInstance()
+class GoalModel : ViewModel() {
+    var list = mutableStateListOf<Goal>()
+    private val goalRepo = GoalRepo.getInstance()
     fun mergeData(local: Array<Goal> = emptyArray(), remote: Array<Goal> = emptyArray()) {
-        val newArray = (local + remote).distinctBy {it._id}.toTypedArray()
+        val newArray = (local + remote).distinctBy { it._id }.toTypedArray()
         list.addAll(newArray)
     }
 
-    fun remove() {
-
+    fun remove(goal: Goal) {
+//        goalRepo
     }
 }
 
@@ -42,7 +44,7 @@ fun HomePage(navController: NavController) {
     val context = LocalContext.current
     val userToken = LocalDataUser(context).getToken()
     val localData = LocalData(context).getAll()
-    val remoteData = GoalRepo().getInstance(userToken)
+    val remoteData = GoalRepo.getInstance(userToken)
 
     val goalModel = GoalModel()
 //    Button(onClick = {
@@ -50,12 +52,25 @@ fun HomePage(navController: NavController) {
 //    }) {
 //        Text(text = "navigate to sign-in page")
 //    }
-    remoteData.getGoalToday(){ res, err ->
-        run {
-            if (err != null) {
-                goalModel.mergeData(localData)
-            } else {
-                goalModel.mergeData(localData, res!!.result)
+//    remoteData.getGoalToday(){ res, err ->
+//        run {
+//            if (err != null) {
+//                goalModel.mergeData(localData)
+//            } else {
+//                goalModel.mergeData(localData, res!!.result)
+//            }
+//        }
+//    }
+    LaunchedEffect(Unit) {
+        Log.d("App", "user token $userToken")
+        remoteData.getGoalToday() { res, err ->
+            run {
+                if (err != null) {
+                    Log.d("App", "error: ${err.message}")
+                    goalModel.mergeData(localData)
+                } else {
+                    goalModel.mergeData(localData, res!!.result)
+                }
             }
         }
     }
@@ -74,7 +89,7 @@ fun HomePage(navController: NavController) {
                 .padding(it)
         ) {
             DashBoardPreview()
-            GoalList(navController)
+            GoalList(navController, goalModel)
         }
     }
 }
