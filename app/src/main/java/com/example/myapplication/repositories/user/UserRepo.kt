@@ -73,7 +73,7 @@ object UserRepo {
 
     fun ChangePassword(token:String,userId:String,oldPassword:String,newPassword:String ,callback: (ChangePassResponse?, Throwable?) -> Unit){
         val payload=ChangePassRequest(userId, oldPassword, newPassword)
-        val call= client?.changePass(payload)
+        val call= client?.changePass(token,payload)
         call?.enqueue(object :Callback<ChangePassResponse>{
             override fun onResponse(
                 call: Call<ChangePassResponse>,
