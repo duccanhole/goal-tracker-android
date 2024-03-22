@@ -2,12 +2,8 @@ package com.example.myapplication.navigation
 
 import CustomNotification
 import android.content.Context
-import android.os.Build
-import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +25,6 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,12 +43,7 @@ import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TimeUtils
-import java.sql.Time
-import java.util.Calendar
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.Locale
 
 fun checkgoal(title:String, time: Long):String{
     if(title.isNullOrEmpty()) return "Không được để trống!!"
@@ -75,20 +65,23 @@ fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
     val localData = LocalData(context)
     localData.add(payload)
     if (notificationTime != null) {
-        CustomNotification(context,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
+        val notifyId=goal._id.toInt()
+        Log.d("Apps","notifyId::"+notifyId)
+        CustomNotification(context,notifyId,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun CreateGoalPage(navController: NavController) {
+
     val context = LocalContext.current
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var goalData by remember {
         mutableStateOf(Goal(_id = "0", name = "", notifyAt = "", createdAt = "", user = null))
     }
-    val notifyAt = rememberTimePickerState(0, 0, is24Hour = true)
+    val notifyAt = rememberTimePickerState(LocalDateTime.now().hour, LocalDateTime.now().minute+1, is24Hour = true)
     LazyColumn(modifier = Modifier.padding(20.dp)) {
         item { Text(
             text = "Thêm mục tiêu mới",

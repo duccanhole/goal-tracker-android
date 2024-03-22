@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cancelNotification
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
@@ -80,9 +81,11 @@ fun GoalList(navController: NavController) {
                     onDelete = {
                         goalSelected.value = item
                         dialogConfirm.value = true
+
                     },
                     onEdit = {
                         navController.navigate("update/${item._id}")
+
                     })
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -176,6 +179,10 @@ fun GoalList(navController: NavController) {
                         list.remove(goalSelected.value)
                         goalSelected.value = null
                         dialogConfirm.value = false
+                        val notifyId=goalSelected.value?._id?.toInt()
+                        if (notifyId != null) {
+                            cancelNotification(context,notifyId)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

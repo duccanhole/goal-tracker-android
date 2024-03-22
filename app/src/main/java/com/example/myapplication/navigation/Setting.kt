@@ -1,6 +1,5 @@
 package com.example.myapplication.navigation
 
-import CustomNotification
 import android.graphics.drawable.Icon
 import android.util.Log
 import android.widget.Toast

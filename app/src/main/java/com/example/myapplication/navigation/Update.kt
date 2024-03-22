@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
@@ -53,78 +54,80 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
     val hour = if(goal.hasNotfication && cal != null) cal.get(Calendar.HOUR_OF_DAY) else 0
     val minus = if(goal.hasNotfication && cal != null) cal.get(Calendar.MINUTE) else 0
     val notifyAt = rememberTimePickerState(hour, minus, is24Hour = true)
-    Column(modifier = Modifier.padding(20.dp)) {
-        Text(
-            text = "Cập nhật mục tiêu",
-            fontSize = TextSizeUtils.LARGE,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-        TextField(
-            value = goalData.name,
-            onValueChange = { goalData = goalData.copy(name = it) },
-            label = {
-                Text("Tiêu đề")
-            },
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(8.dp))
-                .background(Color.White)
-                .fillMaxWidth(),
-            textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Row {
-            Text(
-                text = "Thông báo",
-                modifier = Modifier.weight(1f),
-                fontSize = TextSizeUtils.MEDIUM
-            )
-            Switch(
-                checked = goalData.hasNotfication,
-                onCheckedChange = {
-                    goalData = goalData.copy(hasNotfication = it)
-                },
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = Color(ColorUtils.primary)
-                )
-            )
-        }
-        if (goalData.hasNotfication) TimePicker(
-            state = notifyAt,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
-        )
-        Button(
-            onClick = {
-                navController.navigate(Navigation.HOME)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(ColorUtils.accent)
-            )
-        ) {
-            Text(text = "Hủy", fontSize = TextSizeUtils.MEDIUM)
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Button(
-            onClick = {
+    LazyColumn(modifier = Modifier.padding(20.dp)) {
+       item {
+           Text(
+               text = "Cập nhật mục tiêu",
+               fontSize = TextSizeUtils.LARGE,
+               fontWeight = FontWeight.Bold
+           )
+           Spacer(modifier = Modifier.height(15.dp))
+           TextField(
+               value = goalData.name,
+               onValueChange = { goalData = goalData.copy(name = it) },
+               label = {
+                   Text("Tiêu đề")
+               },
+               modifier = Modifier
+                   .clip(shape = RoundedCornerShape(8.dp))
+                   .background(Color.White)
+                   .fillMaxWidth(),
+               textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
+               singleLine = true
+           )
+           Spacer(modifier = Modifier.height(10.dp))
+           Row {
+               Text(
+                   text = "Thông báo",
+                   modifier = Modifier.weight(1f),
+                   fontSize = TextSizeUtils.MEDIUM
+               )
+               Switch(
+                   checked = goalData.hasNotfication,
+                   onCheckedChange = {
+                       goalData = goalData.copy(hasNotfication = it)
+                   },
+                   colors = SwitchDefaults.colors(
+                       checkedTrackColor = Color(ColorUtils.primary)
+                   )
+               )
+           }
+           if (goalData.hasNotfication) TimePicker(
+               state = notifyAt,
+               modifier = Modifier.fillMaxWidth(),
+               colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
+           )
+           Button(
+               onClick = {
+                   navController.navigate(Navigation.HOME)
+               },
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .height(40.dp),
+               shape = MaterialTheme.shapes.medium,
+               colors = ButtonDefaults.buttonColors(
+                   containerColor = Color(ColorUtils.accent)
+               )
+           ) {
+               Text(text = "Hủy", fontSize = TextSizeUtils.MEDIUM)
+           }
+           Spacer(modifier = Modifier.height(5.dp))
+           Button(
+               onClick = {
 //                onSave(context, goalData, notifyAt)
-                navController.navigate(Navigation.HOME)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(ColorUtils.primary)
-            )
-        ) {
-            Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
-        }
+                   navController.navigate(Navigation.HOME)
+               },
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .height(40.dp),
+               shape = MaterialTheme.shapes.medium,
+               colors = ButtonDefaults.buttonColors(
+                   containerColor = Color(ColorUtils.primary)
+               )
+           ) {
+               Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
+           }
+       }
     }
     if(!goal.hasNotfication){
 
