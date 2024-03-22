@@ -1,5 +1,6 @@
 package com.example.myapplication.composable
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import cancelNotification
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
+import java.util.Objects
 
 fun removeLocalGoal(localData: LocalData, goal: Goal) {
     localData.remove(goal)
@@ -51,7 +53,6 @@ fun GoalList(navController: NavController) {
     var goalSelected = remember {
         mutableStateOf<Goal?>(null)
     }
-
     Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
         Row {
             Button(
@@ -179,10 +180,14 @@ fun GoalList(navController: NavController) {
                         list.remove(goalSelected.value)
                         goalSelected.value = null
                         dialogConfirm.value = false
-                        val notifyId=goalSelected.value?._id?.toInt()
+                        val notifyId=goalSelected.value?._id
+                        Log.d("Apps","id cua delete:"+notifyId)
+                        Log.d("Apps","id cua delete:"+Math.abs(Objects.hashCode(notifyId)))
+
                         if (notifyId != null) {
                             cancelNotification(context,notifyId)
                         }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

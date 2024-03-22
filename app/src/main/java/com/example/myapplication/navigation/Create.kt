@@ -36,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cancelNotification
 import com.example.myapplication.R
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
@@ -44,6 +45,7 @@ import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TimeUtils
 import java.time.LocalDateTime
+import java.util.Objects
 
 fun checkgoal(title:String, time: Long):String{
     if(title.isNullOrEmpty()) return "Không được để trống!!"
@@ -63,11 +65,11 @@ fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
         payload = goal.copy(notifyAt = time)
     }
     val localData = LocalData(context)
-    localData.add(payload)
+    val id = localData.add(payload)
     if (notificationTime != null) {
-        val notifyId=goal._id.toInt()
-        Log.d("Apps","notifyId::"+notifyId)
-        CustomNotification(context,notifyId,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
+        Log.d("Apps","notifyId::"+id)
+        Log.d("Apps","notifyId hash code::"+Math.abs(Objects.hashCode(id)))
+        CustomNotification(context,id,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
     }
 }
 

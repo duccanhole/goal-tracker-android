@@ -85,10 +85,11 @@ class LocalData() {
         return null
     }
 
-    public fun add(goal: Goal) {
+    public fun add(goal: Goal): String {
+        val newId = UUID.randomUUID().toString();
         val jsonObject = JSONObject()
         jsonObject.apply {
-            put("_id", UUID.randomUUID().toString())
+            put("_id", newId)
             put("name", goal.name)
             put("user", goal.user)
             put("isDone", false)
@@ -98,6 +99,7 @@ class LocalData() {
         }
         jsonData?.put(jsonObject)
         jsonData?.let { write(it) }
+        return newId
     }
 
     public fun update(goal: Goal) {
