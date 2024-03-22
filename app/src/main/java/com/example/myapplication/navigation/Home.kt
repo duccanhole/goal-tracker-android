@@ -54,4 +54,5 @@ fun HomePage(navController: NavController) {
             GoalList(navController)
         }
     }
+
 }

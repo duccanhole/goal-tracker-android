@@ -89,7 +89,7 @@ fun GoalItem(goalItem: Goal, onChecked: (value: Boolean) -> Unit, onDelete: () -
                 Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
             }
             IconButton(
-                onClick = { onDelete() },
+                onClick = { onDelete()  },
             ) {
                 Icon(Icons.Rounded.Delete, contentDescription = null, tint = Color(0xFFCC0000))
             }

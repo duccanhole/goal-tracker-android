@@ -1,11 +1,9 @@
 package com.example.myapplication.navigation
 
+import CustomNotification
 import android.content.Context
-import android.os.Build
-import android.text.TextUtils
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,34 +36,52 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TimeUtils
-import java.util.Calendar
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.time.LocalDateTime
 
+fun checkgoal(title:String, time: Long):String{
+    if(title.isNullOrEmpty()) return "Không được để trống!!"
+
+    val timenow=TimeUtils.toCalendar(TimeUtils.toISOString(LocalDateTime.now().hour,LocalDateTime.now().minute))?.timeInMillis
+    if(time< timenow!!){
+        return "Thời gian không được nhỏ hơn thời gian hiện tại!!"
+    }
+    return ""
+}
 @OptIn(ExperimentalMaterial3Api::class)
 fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
     var payload = goal
+    val time=TimeUtils.toISOString(notifyTime.hour, notifyTime.minute)
+    val notificationTime= TimeUtils.toCalendar(time)?.timeInMillis
     if (goal.hasNotfication) {
-        payload = goal.copy(notifyAt = TimeUtils.toISOString(notifyTime.hour, notifyTime.minute))
+        payload = goal.copy(notifyAt = time)
     }
     val localData = LocalData(context)
     localData.add(payload)
+    if (notificationTime != null) {
+        val notifyId=goal._id.toInt()
+        Log.d("Apps","notifyId::"+notifyId)
+        CustomNotification(context,notifyId,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun CreateGoalPage(navController: NavController) {
+
     val context = LocalContext.current
+    var errorMessage by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
     var goalData by remember {
         mutableStateOf(Goal(_id = "0", name = "", notifyAt = "", createdAt = "", user = null))
     }
-    val notifyAt = rememberTimePickerState(0, 0, is24Hour = true)
+    val notifyAt = rememberTimePickerState(LocalDateTime.now().hour, LocalDateTime.now().minute+1, is24Hour = true)
     LazyColumn(modifier = Modifier.padding(20.dp)) {
         item { Text(
             text = "Thêm mục tiêu mới",
@@ -108,6 +124,14 @@ fun CreateGoalPage(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
             )
+            if (errorMessage.isNotEmpty()) {
+                androidx.compose.material.Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = TextSizeUtils.SMALL,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
             Button(
                 onClick = {
                     navController.navigate(Navigation.HOME)
@@ -125,8 +149,22 @@ fun CreateGoalPage(navController: NavController) {
             Spacer(modifier = Modifier.height(5.dp))
             Button(
                 onClick = {
-                    onSave(context, goalData, notifyAt)
-                    navController.navigate(Navigation.HOME)
+                    val time=TimeUtils.toISOString(notifyAt.hour,notifyAt.minute)
+                    val notificationTime= TimeUtils.toCalendar(time)?.timeInMillis
+
+                    if (notificationTime != null) {
+                        loading=true
+                        errorMessage= checkgoal(goalData.name,notificationTime)
+                        if(errorMessage==""){
+                            onSave(context, goalData, notifyAt)
+                            navController.navigate(Navigation.HOME)
+                            loading=false
+                        }
+                        else{
+                            loading=false
+                        }
+                    }
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,11 +172,13 @@ fun CreateGoalPage(navController: NavController) {
                 shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(ColorUtils.primary)
-                )
+                ),
+                enabled = !loading
             ) {
                 Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
             } }
     }
+
 }
 
 
