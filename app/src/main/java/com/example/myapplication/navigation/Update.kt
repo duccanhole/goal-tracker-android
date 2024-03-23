@@ -1,7 +1,6 @@
 package com.example.myapplication.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,8 +50,8 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
         mutableStateOf<Goal>(goal)
     }
     val cal = TimeUtils.toCalendar(goal.notifyAt)
-    val hour = if(goal.hasNotfication && cal != null) cal.get(Calendar.HOUR_OF_DAY) else 0
-    val minus = if(goal.hasNotfication && cal != null) cal.get(Calendar.MINUTE) else 0
+    val hour = if(goal.hasNotification && cal != null) cal.get(Calendar.HOUR_OF_DAY) else 0
+    val minus = if(goal.hasNotification && cal != null) cal.get(Calendar.MINUTE) else 0
     val notifyAt = rememberTimePickerState(hour, minus, is24Hour = true)
     LazyColumn(modifier = Modifier.padding(20.dp)) {
        item {
@@ -83,16 +82,16 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
                    fontSize = TextSizeUtils.MEDIUM
                )
                Switch(
-                   checked = goalData.hasNotfication,
+                   checked = goalData.hasNotification,
                    onCheckedChange = {
-                       goalData = goalData.copy(hasNotfication = it)
+                       goalData = goalData.copy(hasNotification = it)
                    },
                    colors = SwitchDefaults.colors(
                        checkedTrackColor = Color(ColorUtils.primary)
                    )
                )
            }
-           if (goalData.hasNotfication) TimePicker(
+           if (goalData.hasNotification) TimePicker(
                state = notifyAt,
                modifier = Modifier.fillMaxWidth(),
                colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
@@ -129,7 +128,7 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
            }
        }
     }
-    if(!goal.hasNotfication){
+    if(!goal.hasNotification){
 
     }
 }

@@ -130,18 +130,21 @@ fun SigninPage(navController:NavController) {
                     if (errorMessage=="") {
                         onLogin(username = username, password = password, object : LoginCallback {
                             override fun onSuccess(Token: String,Id: String,Username: String) {
+                                val localData=LocalDataUser(context)
+                                val user=LoginResult(Token, UserData(Id,Username))
+                                localData.setUser(user)
                                 navController.navigate(Navigation.HOME)
                                 // lưu thông tin người dùng, dùng data store
 
-                                val localData=LocalDataUser(context)
-                                if(localData.checkPermission()){
-                                    val user=LoginResult(Token, UserData(Id,Username))
-                                    Log.d("App", user.toString())
-                                    localData.setUser(user)
-//                                localData.clear()
-                                }else{
-                                    localData.requestPermission()
-                                }
+//                                val localData=LocalDataUser(context)
+//                                if(localData.checkPermission()){
+//                                    val user=LoginResult(Token, UserData(Id,Username))
+//                                    localData.setUser(user)
+////                                localData.clear()
+//                                }else{
+//                                    Log.d("App", "perrmission is denied")
+//                                    localData.requestPermission()
+//                                }
 
                                 loading = false
 

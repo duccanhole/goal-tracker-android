@@ -43,9 +43,8 @@ class LocalDataUser() {
     }
 
     public fun getUser(): UserData? {
-        Log.d("App", "read user data ${jsonData.toString()}")
         jsonData?.let {
-            if(it.length()==0) return  null
+            if(it.length() == 0) return null
             val user = UserData(username = it.getString("username"), _id = it.getString("_id"))
             return user
         }
@@ -54,6 +53,7 @@ class LocalDataUser() {
 
     public fun getToken(): String? {
         jsonData?.let {
+            if(it.length() == 0) return null
             return it.getString("token")
         }
         return null
@@ -94,6 +94,7 @@ class LocalDataUser() {
 
     private fun write(jsonObject: JSONObject) {
         try {
+            Log.d("App", "write file ${jsonObject.toString()}")
             val file = File(context?.filesDir, fileName)
             file.writeText(jsonObject.toString())
         } catch (e: IOException) {

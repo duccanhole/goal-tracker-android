@@ -1,8 +1,8 @@
 package com.example.myapplication.navigation
 
-import CustomNotification
 import android.content.Context
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,61 +38,97 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cancelNotification
 import com.example.myapplication.R
-import com.example.myapplication.repositories.goal.Goal
+import com.example.myapplication.repositories.goal.GoalRepo
 import com.example.myapplication.repositories.goal.LocalData
+import com.example.myapplication.repositories.goal.UpdateAndCreateGoal
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TimeUtils
+import setupNotification
 import java.time.LocalDateTime
-import java.util.Objects
 
-fun checkgoal(title:String, time: Long):String{
-    if(title.isNullOrEmpty()) return "Không được để trống!!"
-
-    val timenow=TimeUtils.toCalendar(TimeUtils.toISOString(LocalDateTime.now().hour,LocalDateTime.now().minute))?.timeInMillis
-    if(time< timenow!!){
+@RequiresApi(Build.VERSION_CODES.O)
+fun checkgoal(title: String?, time: Long): String {
+    if (title.isNullOrEmpty()) return "Không được để trống!!"
+    val timeNow = TimeUtils.toCalendar(
+        TimeUtils.toISOString(
+            LocalDateTime.now().hour,
+            LocalDateTime.now().minute
+        )
+    )?.timeInMillis
+    if (time < timeNow!!) {
         return "Thời gian không được nhỏ hơn thời gian hiện tại!!"
     }
     return ""
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
-fun onSave(context: Context, goal: Goal, notifyTime: TimePickerState) {
+fun onSave(
+    context: Context,
+    goal: UpdateAndCreateGoal,
+    notifyTime: TimePickerState,
+    callback: () -> Unit
+) {
     var payload = goal
-    val time=TimeUtils.toISOString(notifyTime.hour, notifyTime.minute)
-    val notificationTime= TimeUtils.toCalendar(time)?.timeInMillis
-    if (goal.hasNotfication) {
+    val time = TimeUtils.toISOString(notifyTime.hour, notifyTime.minute)
+    val notificationTime = TimeUtils.toCalendar(time)?.timeInMillis
+    if (goal.hasNotification) {
         payload = goal.copy(notifyAt = time)
     }
     val localData = LocalData(context)
-    val id = localData.add(payload)
-    if (notificationTime != null) {
-        Log.d("Apps","notifyId::"+id)
-        Log.d("Apps","notifyId hash code::"+Math.abs(Objects.hashCode(id)))
-        CustomNotification(context,id,goal.name,"Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,notificationTime)
+    var notifyId = ""
+    GoalRepo.getInstance().createGoal(payload) { response, throwable ->
+        if (throwable != null) {
+            notifyId = localData.add(payload)
+        } else {
+            localData.add(response!!.result)
+            notifyId = response.result._id
+        }
+        setupNotification(
+            context,
+            notifyId,
+            goal.name!!,
+            "Đến giờ thực hiện rồi!!!",
+            R.drawable.ic_notifications_black_24dp,
+            notificationTime
+        )
+        callback()
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun CreateGoalPage(navController: NavController) {
-
     val context = LocalContext.current
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var goalData by remember {
-        mutableStateOf(Goal(_id = "0", name = "", notifyAt = "", createdAt = "", user = null))
-    }
-    val notifyAt = rememberTimePickerState(LocalDateTime.now().hour, LocalDateTime.now().minute+1, is24Hour = true)
-    LazyColumn(modifier = Modifier.padding(20.dp)) {
-        item { Text(
-            text = "Thêm mục tiêu mới",
-            fontSize = TextSizeUtils.LARGE,
-            fontWeight = FontWeight.Bold
+        mutableStateOf(
+            UpdateAndCreateGoal(
+                name = "",
+                notifyAt = "",
+                user = null,
+                hasNotification = false
+            )
         )
+    }
+    val notifyAt = rememberTimePickerState(
+        LocalDateTime.now().hour,
+        LocalDateTime.now().minute + 1,
+        is24Hour = true
+    )
+    LazyColumn(modifier = Modifier.padding(20.dp)) {
+        item {
+            Text(
+                text = "Thêm mục tiêu mới",
+                fontSize = TextSizeUtils.LARGE,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(modifier = Modifier.height(15.dp))
             TextField(
-                value = goalData.name,
+                value = goalData.name!!,
                 onValueChange = { goalData = goalData.copy(name = it) },
                 label = {
                     Text("Tiêu đề")
@@ -112,16 +148,16 @@ fun CreateGoalPage(navController: NavController) {
                     fontSize = TextSizeUtils.MEDIUM
                 )
                 Switch(
-                    checked = goalData.hasNotfication,
+                    checked = goalData.hasNotification,
                     onCheckedChange = {
-                        goalData = goalData.copy(hasNotfication = it)
+                        goalData = goalData.copy(hasNotification = it)
                     },
                     colors = SwitchDefaults.colors(
                         checkedTrackColor = Color(ColorUtils.primary)
                     )
                 )
             }
-            if (goalData.hasNotfication) TimePicker(
+            if (goalData.hasNotification) TimePicker(
                 state = notifyAt,
                 modifier = Modifier.fillMaxWidth(),
                 colors = TimePickerDefaults.colors(selectorColor = Color(ColorUtils.primary)),
@@ -151,19 +187,19 @@ fun CreateGoalPage(navController: NavController) {
             Spacer(modifier = Modifier.height(5.dp))
             Button(
                 onClick = {
-                    val time=TimeUtils.toISOString(notifyAt.hour,notifyAt.minute)
-                    val notificationTime= TimeUtils.toCalendar(time)?.timeInMillis
+                    val time = TimeUtils.toISOString(notifyAt.hour, notifyAt.minute)
+                    val notificationTime = TimeUtils.toCalendar(time)?.timeInMillis
 
                     if (notificationTime != null) {
-                        loading=true
-                        errorMessage= checkgoal(goalData.name,notificationTime)
-                        if(errorMessage==""){
-                            onSave(context, goalData, notifyAt)
-                            navController.navigate(Navigation.HOME)
-                            loading=false
-                        }
-                        else{
-                            loading=false
+                        loading = true
+                        errorMessage = checkgoal(goalData.name, notificationTime)
+                        if (errorMessage == "") {
+                            onSave(context, goalData, notifyAt) {
+                                navController.navigate(Navigation.HOME)
+                                loading = false
+                            }
+                        } else {
+                            loading = false
                         }
                     }
 
@@ -178,12 +214,25 @@ fun CreateGoalPage(navController: NavController) {
                 enabled = !loading
             ) {
                 Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
-            } }
+            }
+        }
     }
-    val timenow=TimeUtils.toCalendar(TimeUtils.toISOString(LocalDateTime.now().hour,LocalDateTime.now().minute))?.timeInMillis
+    val timenow = TimeUtils.toCalendar(
+        TimeUtils.toISOString(
+            LocalDateTime.now().hour,
+            LocalDateTime.now().minute
+        )
+    )?.timeInMillis
     if (timenow != null) {
-        CustomNotification(context,"1","goal.name","Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,timenow+5)
-        cancelNotification(context,"1")
+        setupNotification(
+            context,
+            "1",
+            "goal.name",
+            "Đến giờ thực hiện rồi!!!",
+            R.drawable.ic_notifications_black_24dp,
+            timenow + 5
+        )
+        cancelNotification(context, "1")
     }
 
 
