@@ -30,6 +30,8 @@ object TimeUtils {
     }
 
     fun formatDate(dateString: String, from: String = "yyyy-MM-dd HH:mm:ss", to: String = "HH:mm"): String {
+        if(dateString.isEmpty()) return ""
+
         val inputDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val outputDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 

@@ -55,7 +55,8 @@ import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.composable.CustomDialog
 import com.example.myapplication.composable.DashBoardPreview
-import com.example.myapplication.composable.removeLocalGoal
+import com.example.myapplication.composable.SettingItem
+import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.ColorUtils
@@ -64,65 +65,41 @@ import com.example.myapplication.utils.TextSizeUtils
 import java.util.Calendar
 
 interface ChangePassCallback {
-    fun onSuccess(result:String)
+    fun onSuccess(result: String)
     fun onError(errormessage: String)
 }
-fun onChangePassword(token:String,userid:String,oldpassword:String,newpassword:String,callback: ChangePassCallback){
-    UserRepo.getInstance().ChangePassword(token,userid,oldpassword,newpassword){
-        res,err ->run{
-            if(err!=null){
+
+fun onChangePassword(
+    token: String,
+    userid: String,
+    oldpassword: String,
+    newpassword: String,
+    callback: ChangePassCallback
+) {
+    UserRepo.getInstance().ChangePassword(token, userid, oldpassword, newpassword) { res, err ->
+        run {
+            if (err != null) {
                 callback.onError("Đã  xảy ra lỗi!!!")
+            } else {
+                callback.onSuccess(res?.result.toString())
             }
-        else{
-            callback.onSuccess(res?.result.toString())
-            }
-    }
+        }
     }
 }
-fun checkvalidatepass(oldpassword: String,newpassword: String):String{
-    if(oldpassword.isBlank()||newpassword.isBlank()) return "Không được để trống !!"
-    if(oldpassword.length<6) return "Mật kẩu cũ quá ngắn!!"
-    if(newpassword.length<6) return "Mật kẩu mới quá ngắn!!"
-    if(newpassword==oldpassword) return "Mật khẩu mới không được trùng mới mật khẩu cũ!"
+
+fun checkvalidatepass(oldpassword: String, newpassword: String): String {
+    if (oldpassword.isBlank() || newpassword.isBlank()) return "Không được để trống !!"
+    if (oldpassword.length < 6) return "Mật kẩu cũ quá ngắn!!"
+    if (newpassword.length < 6) return "Mật kẩu mới quá ngắn!!"
+    if (newpassword == oldpassword) return "Mật khẩu mới không được trùng mới mật khẩu cũ!"
     return ""
 }
 
 @Composable()
-fun ItemSetting( name:String,icon: ImageVector,onClick: () -> Unit,color:Color= Color(ColorUtils.accent)){
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = color, contentColor = Color.White),
-    ){
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 5.dp, end = 5.dp)
-            ,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .padding(end = 10.dp)
-            )
-            Text(
-                text = name,
-                fontSize = TextSizeUtils.MEDIUM
-            )
-        }
-    }
-    Spacer(modifier = Modifier.height(5.dp))
-}
-@Composable()
 fun SettingPage(navController: NavController) {
-    val context= LocalContext.current
+    val context = LocalContext.current
     val userLocal = LocalDataUser(context)
+    val localData = LocalData(context)
     val userInfor = userLocal.getUser()
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember {
@@ -137,12 +114,15 @@ fun SettingPage(navController: NavController) {
     var showdialog by remember {
         mutableStateOf(false)
     }
+    var confirmLogout by remember {
+        mutableStateOf(false)
+    }
     Surface(
-        color= Color(ColorUtils.background)
+        color = Color(ColorUtils.background)
     ) {
         Column(
-            modifier= Modifier.fillMaxSize(),
-            horizontalAlignment =Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             Text(
@@ -152,19 +132,18 @@ fun SettingPage(navController: NavController) {
                 fontSize = TextSizeUtils.LARGE,
                 fontWeight = FontWeight.Bold
             )
-            if(userInfor?.username.isNullOrEmpty()) {
-               Column(
-                   modifier = Modifier
-                       .fillMaxWidth()
-                       .padding(30.dp)
-               ) {
-                   ItemSetting(name = "Đăng nhập", icon =Icons.Rounded.Mail, onClick = {
-                       navController.navigate(Navigation.SIGN_IN)
-                   })
-               }
-                
-            }
-                else{
+            if (userInfor?.username.isNullOrEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(30.dp)
+                ) {
+                    SettingItem(name = "Đăng nhập", icon = Icons.Rounded.Mail, onClick = {
+                        navController.navigate(Navigation.SIGN_IN)
+                    })
+                }
+
+            } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,27 +152,30 @@ fun SettingPage(navController: NavController) {
 
                     item() {
                         Text(
-                            text="Acount",
+                            text = "Acount",
                             fontSize = TextSizeUtils.MEDIUM,
 
                             )
-                        ItemSetting(name = "Xem thông tin ", icon = Icons.Rounded.AccountCircle, onClick = {null})
-                        ItemSetting(name = "Đổi mật khẩu", icon = Icons.Rounded.Password, onClick = {
-                            showdialog=true
-                        })
-
-                        ItemSetting(
-                            name= "Đăng xuất"
-                            , icon = Icons.Rounded.ExitToApp,
+                        SettingItem(
+                            name = "Xem thông tin ",
+                            icon = Icons.Rounded.AccountCircle,
+                            onClick = { null })
+                        SettingItem(
+                            name = "Đổi mật khẩu",
+                            icon = Icons.Rounded.Password,
                             onClick = {
-                                Log.d("App","đã đăng xuất")
-                                navController.navigate(Navigation.HOME)
-                                userLocal.clear()
+                                showdialog = true
+                            })
+
+                        SettingItem(
+                            name = "Đăng xuất", icon = Icons.Rounded.ExitToApp,
+                            onClick = {
+//                                navController.navigate(Navigation.HOME)
+//                                userLocal.clear()
+                                confirmLogout = true
                             },
                             color = Color(ColorUtils.primary)
-
                         )
-
                     }
                 }
             }
@@ -205,132 +187,175 @@ fun SettingPage(navController: NavController) {
             ) {
                 item() {
                     Text(
-                        text="App",
+                        text = "App",
                         fontSize = TextSizeUtils.MEDIUM,
                     )
-                    ItemSetting(name = "Chuyển đổi giao diện", icon = Icons.Rounded.WbSunny, onClick = {null})
-                    ItemSetting(name = "Đồng bộ dữ liệu", icon = Icons.Rounded.Sync, onClick = {null})
-                    ItemSetting(name = "Thông tin  về ứng dụng", icon = Icons.Rounded.ErrorOutline, onClick = {null})
-
+                    SettingItem(
+                        name = "Chuyển đổi giao diện",
+                        icon = Icons.Rounded.WbSunny,
+                        onClick = { null })
+                    SettingItem(
+                        name = "Đồng bộ dữ liệu",
+                        icon = Icons.Rounded.Sync,
+                        onClick = { null })
+                    SettingItem(
+                        name = "Thông tin về ứng dụng",
+                        icon = Icons.Rounded.ErrorOutline,
+                        onClick = { null })
                 }
             }
         }
     }
-    if(showdialog){
+    if (showdialog) {
+        CustomDialog(
+            onDismissRequest = {
+                showdialog = false
+            },
+            title = "Đổi mật khẩu",
+            subtitle = "",
+            Body = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    TextField(
+                        value = oldPassword,
+                        onValueChange = { oldPassword = it },
+                        label = { Text(text = "Mật khẩu cũ") },
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .background(Color.White)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true
+                    )
+                    TextField(
+                        value = newPassword,
+                        onValueChange = { newPassword = it },
+                        label = { Text(text = "Mật khẩu mới") },
+                        modifier = Modifier
+                            .padding(bottom = 10.dp, top = 30.dp)
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .background(Color.White)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true
 
-       CustomDialog(
-           onDismissRequest = {
-               showdialog=false
-           },
-           title = "Đổi mật khẩu",
-           subtitle = "",
-           Body = {
-               Column(
-                   modifier = Modifier
-                       .padding(40.dp),
-                   horizontalAlignment = Alignment.CenterHorizontally,
-                   verticalArrangement = Arrangement.Top
-               ) {
-                   TextField(
-                       value = oldPassword,
-                       onValueChange = { oldPassword = it },
-                       label = { Text(text = "Mật khẩu cũ") },
-                       modifier = Modifier
-                           .clip(shape = RoundedCornerShape(8.dp))
-                           .background(Color.White)
-                           .fillMaxWidth(),
-                       textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
-                       visualTransformation = PasswordVisualTransformation(),
-                       singleLine = true
+                    )
+                    if (errorMessage.isNotEmpty()) {
+                        Text(
+                            text = errorMessage,
+                            color = Color.Red,
+                            fontSize = TextSizeUtils.SMALL,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+            },
+            DeclineBtn = {
+                Button(
+                    onClick = {
+                        showdialog = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Transparent,
+                        contentColor = Color.Gray
+                    )
+                ) {
+                    Text(text = "Hủy")
+                }
+            },
+            ConfirmBtn = {
+                Button(
+                    onClick = {
+                        errorMessage = checkvalidatepass(oldPassword, newPassword)
+                        loading = true
+                        val userid = userInfor?._id.toString()
+                        val token = userLocal.getToken().toString()
+                        Log.d("App", userid)
+                        Log.d("App", token)
+                        if (errorMessage == "") {
+                            onChangePassword(
+                                token,
+                                userid,
+                                oldPassword,
+                                newPassword,
+                                object : ChangePassCallback {
+                                    override fun onSuccess(result: String) {
+                                        Toast.makeText(
+                                            context,
+                                            "Đổi mật khẩu thành công!!!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        loading = false
+                                        showdialog = false
+                                        oldPassword = ""
+                                        newPassword = ""
+                                    }
 
-                   )
-                   TextField(
-                       value = newPassword,
-                       onValueChange = { newPassword = it },
-                       label = { Text(text = "Mật khẩu mới") },
-                       modifier = Modifier
-                           .padding(bottom = 10.dp, top = 30.dp)
-                           .clip(shape = RoundedCornerShape(8.dp))
-                           .background(Color.White)
-                           .fillMaxWidth(),
-                       textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
-                       visualTransformation = PasswordVisualTransformation(),
-                       singleLine = true
-
-                   )
-                   if (errorMessage.isNotEmpty()) {
-                       Text(
-                           text = errorMessage,
-                           color = Color.Red,
-                           fontSize = TextSizeUtils.SMALL,
-                           modifier = Modifier.padding(top = 8.dp)
-                       )
-                   }
-               }
-           },
-           DeclineBtn = {
-               Button(
-                   onClick = {
-                             showdialog=false
-                   },
-                   modifier = Modifier
-                       .fillMaxWidth(),
-                   colors = ButtonDefaults.buttonColors(
-                       backgroundColor = Color.Transparent,
-                       contentColor = Color.Gray
-                   )
-                   ) {
-                   Text(text = "Hủy")
-               }
-           },
-           ConfirmBtn = {
-               Button(
-                   onClick = {
-
-                       errorMessage = checkvalidatepass(oldPassword, newPassword)
-                       loading = true
-
-                       val userid=userInfor?._id.toString()
-                       val token=userLocal.getToken().toString()
-                       Log.d("App",userid)
-                       Log.d("App",token)
-                       if(errorMessage==""){
-
-                           onChangePassword(token,userid,oldPassword,newPassword,object :ChangePassCallback{
-                               override fun onSuccess(result: String) {
-
-                                   Toast.makeText(context, "Đổi mật khẩu thành công!!!", Toast.LENGTH_SHORT).show()
-                                   loading=false
-                                   showdialog=false
-                                   oldPassword=""
-                                   newPassword=""
-                               }
-
-                               override fun onError(errormessage: String) {
-
-                                   errorMessage=errormessage
-                                   loading = false
-                               }
-
-                           })
-                       }
-                       else{
-
-                           loading=false
-                       }
-
-                   },
-                   modifier = Modifier
-                       .fillMaxWidth(),
-                   colors = ButtonDefaults.buttonColors(
-                       backgroundColor = Color(ColorUtils.primary)
-                   ),
-                   enabled = !loading
-               ) {
-                  Text(text = if(loading) "Đang xử lý" else "Đổi mật khẩu")
-               }
-
-           }
-       )
+                                    override fun onError(errormessage: String) {
+                                        errorMessage = errormessage
+                                        loading = false
+                                    }
+                                })
+                        } else {
+                            loading = false
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(ColorUtils.primary),
+                        contentColor = Color.White
+                    ),
+                    enabled = !loading
+                ) {
+                    Text(text = if (loading) "Đang xử lý" else "Đổi mật khẩu")
+                }
+            }
+        )
+    }
+    if (confirmLogout) {
+        CustomDialog(
+            onDismissRequest = { confirmLogout = false },
+            title = "Xác nhận đăng xuất",
+            subtitle = "Dữ liệu chưa chưa được đồng bộ trên máy của bạn sẽ bị mất, đăng xuất?",
+            DeclineBtn = {
+                androidx.compose.material3.Button(
+                    onClick = {
+                        confirmLogout = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Gray
+                    )
+                ) {
+                    androidx.compose.material3.Text(text = "Hủy")
+                }
+            },
+            ConfirmBtn = {
+                androidx.compose.material3.Button(
+                    onClick = {
+                        userLocal.clear()
+                        localData.clear()
+                        confirmLogout = true
+                        navController.navigate(Navigation.SIGN_IN)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color(ColorUtils.primary)
+                    ),
+                ) {
+                    androidx.compose.material3.Text(text = "Đăng xuất")
+                }
+            }
+        )
     }
 }

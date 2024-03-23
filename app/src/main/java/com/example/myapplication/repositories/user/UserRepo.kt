@@ -1,6 +1,7 @@
 package com.example.myapplication.repositories.user
 
 import android.util.Log
+import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.utils.BaseUrl
 import org.json.JSONObject
 import retrofit2.Call
@@ -70,7 +71,6 @@ object UserRepo {
         })
     }
 
-
     fun ChangePassword(token:String,userId:String,oldPassword:String,newPassword:String ,callback: (ChangePassResponse?, Throwable?) -> Unit){
         val payload=ChangePassRequest(userId, oldPassword, newPassword)
         val call= client?.changePass(token,payload)
@@ -95,5 +95,4 @@ object UserRepo {
 
         })
     }
-
 }
