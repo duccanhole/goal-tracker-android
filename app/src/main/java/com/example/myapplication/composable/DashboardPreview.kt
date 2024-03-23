@@ -25,17 +25,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 
+fun getPercent(list: List<Goal>): Float {
+    if(list.isEmpty()) return (0).toFloat()
+    val done = list.filter { i -> i.isDone }.size
+    return (done/list.size).toFloat()
+}
 
 @Composable()
-@Preview()
-fun DashBoardPreview(name: String = "Guest") {
+fun DashBoardPreview(list: List<Goal>) {
     val context = LocalContext.current
     val userLocal = LocalDataUser(context)
     val userInfor = userLocal.getUser()
+
+    val percent = getPercent(list)
     Column(modifier = Modifier.padding(20.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -58,9 +65,9 @@ fun DashBoardPreview(name: String = "Guest") {
             }
         }
         Column(modifier = Modifier.padding(top = 10.dp)) {
-            Text(text = "Goal today: 56%", fontSize = TextSizeUtils.MEDIUM)
+            Text(text = "Mục tiêu hôm nay: ${percent.toInt()}%", fontSize = TextSizeUtils.MEDIUM)
             LinearProgressIndicator(
-                progress = 0.56.toFloat(),
+                progress = percent,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp),

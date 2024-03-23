@@ -43,7 +43,6 @@ class LocalDataUser() {
     }
 
     public fun getUser(): UserData? {
-        Log.d("App", "read user data ${jsonData.toString()}")
         jsonData?.let {
             if(it.length() == 0) return null
             val user = UserData(username = it.getString("username"), _id = it.getString("_id"))
@@ -69,7 +68,6 @@ class LocalDataUser() {
                 put("username", userinfo.userData.username)
             }
             jsonData = jsonObject
-            Log.d("App", "set user result ${jsonData.toString()}")
             jsonData?.let { write(it) }
         } catch (e: Exception) {
             e.printStackTrace()

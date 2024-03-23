@@ -13,11 +13,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object GoalRepo {
     private var client: GoalService? = null;
-    private var instance: GoalRepo? = null
+    private var instance: GoalRepo? = null;
+    private var token: String? = null
     fun getInstance(token: String? = null): GoalRepo {
-        if (client == null) {
+        if (client == null || this.token == null) {
             val httpClient = OkHttpClient.Builder()
             if (!token.isNullOrEmpty()) {
+                this.token = token
                 // Add an interceptor to add headers to every request
                 httpClient.addInterceptor { chain ->
                     val original: Request = chain.request()
@@ -41,7 +43,6 @@ object GoalRepo {
                     instance = GoalRepo
                 }
             }
-
         }
 
         return instance!!
@@ -49,15 +50,14 @@ object GoalRepo {
 
     fun getGoalToday(callback: (Response<Array<Goal>>?, Throwable?) -> Unit) {
         val call = client?.getGoalToday()
-        call?.enqueue(object: Callback<Response<Array<Goal>>> {
+        call?.enqueue(object : Callback<Response<Array<Goal>>> {
             override fun onResponse(
                 call: Call<Response<Array<Goal>>>,
                 response: retrofit2.Response<Response<Array<Goal>>>
             ) {
                 if (response.isSuccessful) {
                     callback(response.body(), null)
-                }
-                else {
+                } else {
                     callback(null, Exception("An error has occured, code: ${response.code()}"))
                 }
             }
@@ -69,17 +69,62 @@ object GoalRepo {
         })
     }
 
+    fun createGoal(goal: UpdateAndCreateGoal, callback: (Response<Goal>?, Throwable?) -> Unit) {
+        val call = client?.createGoal(goal)
+        call?.enqueue(object : Callback<Response<Goal>> {
+            override fun onResponse(
+                call: Call<Response<Goal>>,
+                response: retrofit2.Response<Response<Goal>>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<Goal>>, t: Throwable) {
+                t.message?.let { Log.e("App", it) }
+                callback(null, t)
+            }
+        })
+    }
+
+    fun updateGoal(
+        id: String,
+        goal: UpdateAndCreateGoal,
+        callback: (Response<Goal>?, Throwable?) -> Unit
+    ) {
+        val call = client?.updateGoal(id, goal)
+        call?.enqueue(object : Callback<Response<Goal>> {
+            override fun onResponse(
+                call: Call<Response<Goal>>,
+                response: retrofit2.Response<Response<Goal>>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<Goal>>, t: Throwable) {
+                t.message?.let { Log.e("App", it) }
+                callback(null, t)
+            }
+        })
+    }
+
     fun removeGoal(id: String, callback: (Response<String>?, Throwable?) -> Unit) {
         val call = client?.removeGoal(id)
-        call?.enqueue(object: Callback<Response<String>> {
+        call?.enqueue(object : Callback<Response<String>> {
             override fun onResponse(
                 call: Call<Response<String>>,
                 response: retrofit2.Response<Response<String>>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     callback(response.body(), null)
-                }
-                else {
+                } else {
                     callback(null, Exception("An error has occured, code: ${response.code()}"))
                 }
             }

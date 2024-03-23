@@ -54,7 +54,7 @@ class LocalData() {
                     name = jsonOject.getString("name"),
                     user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
                     isDone = jsonOject.getBoolean("isDone"),
-                    hasNotfication = jsonOject.getBoolean("hasNotification"),
+                    hasNotification = jsonOject.getBoolean("hasNotification"),
                     notifyAt = jsonOject.getString("notifyAt"),
                     createdAt = jsonOject.getString("createdAt")
                 )
@@ -74,7 +74,7 @@ class LocalData() {
                         name = jsonOject.getString("name"),
                         user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
                         isDone = jsonOject.getBoolean("isDone"),
-                        hasNotfication = jsonOject.getBoolean("hasNotification"),
+                        hasNotification = jsonOject.getBoolean("hasNotification"),
                         notifyAt = jsonOject.getString("notifyAt"),
                         createdAt = jsonOject.getString("createdAt")
                     )
@@ -88,11 +88,11 @@ class LocalData() {
     public fun add(goal: Goal) {
         val jsonObject = JSONObject()
         jsonObject.apply {
-            put("_id", UUID.randomUUID().toString())
+            put("_id", goal._id)
             put("name", goal.name)
             put("user", goal.user)
             put("isDone", false)
-            put("hasNotification", goal.hasNotfication)
+            put("hasNotification", goal.hasNotification)
             put("notifyAt", goal.notifyAt)
             put("createdAt", goal.createdAt)
         }
@@ -100,7 +100,22 @@ class LocalData() {
         jsonData?.let { write(it) }
     }
 
-    public fun update(goal: Goal) {
+    public fun add(goal: UpdateAndCreateGoal) {
+        val jsonObject = JSONObject()
+        jsonObject.apply {
+            put("_id", UUID.randomUUID().toString())
+            put("name", goal.name)
+            put("user", goal.user)
+            put("isDone", false)
+            put("hasNotification", goal.hasNotification)
+            put("notifyAt", goal.notifyAt)
+            put("createdAt", "")
+        }
+        jsonData?.put(jsonObject)
+        jsonData?.let { write(it) }
+    }
+
+    public fun update(id: String, goal: Goal) {
         var index = -1
         val jsonObject = JSONObject()
         jsonObject.apply {
@@ -108,19 +123,54 @@ class LocalData() {
             put("name", goal.name)
             put("user", goal.user)
             put("isDone", goal.isDone)
-            put("hasNotification", goal.hasNotfication)
+            put("hasNotification", goal.hasNotification)
             put("notifyAt", goal.notifyAt)
             put("createdAt", goal.createdAt)
         }
         jsonData?.let {
             for (i in 0 until it.length()) {
                 val jsonOject = it.getJSONObject(i);
-                if (goal._id == jsonOject.getString("_id")) {
+                if (id == jsonOject.getString("_id")) {
                     index = i;
                     break;
                 }
             }
             if (index >= 0 && index < it.length()) {
+                it.put(index, jsonObject)
+            }
+            else {
+                it.put(jsonObject)
+            }
+            write(it)
+        }
+    }
+
+    public fun update(id: String, goal: UpdateAndCreateGoal) {
+        var index = -1
+        val jsonObject = JSONObject()
+        jsonObject.apply {
+            put("_id", id)
+            put("name", goal.name)
+            put("user", goal.user)
+            put("isDone", goal.isDone)
+            put("hasNotification", goal.hasNotification)
+            put("notifyAt", goal.notifyAt)
+            put("createdAt", "")
+        }
+        jsonData?.let {
+            for (i in 0 until it.length()) {
+                val jsonOject = it.getJSONObject(i);
+                if (id == jsonOject.getString("_id")) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index >= 0 && index < it.length()) {
+                if(goal.name.isNullOrEmpty()) jsonObject.put("name", goal.name)
+                if(goal.user.isNullOrEmpty()) jsonObject.put("user", goal.user)
+                if(goal.user.isNullOrEmpty()) jsonObject.put("notifyAt", goal.notifyAt)
+                jsonObject.put("isDone", goal.isDone)
+                jsonObject.put("hasNotification", goal.isDone)
                 it.put(index, jsonObject)
             }
             else {
@@ -172,8 +222,9 @@ class LocalData() {
         return try {
             val file = File(context?.filesDir, fileName)
             val text = file.readText()
-            Log.d("App", "read file userData: $text")
-            JSONArray(text)
+            Log.d("App", "Local goal: $text")
+//            JSONArray(text)
+            JSONArray("[]")
         } catch (e: IOException) {
             e.printStackTrace()
             return JSONArray()

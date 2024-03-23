@@ -20,6 +20,7 @@ class AlarmReceiver:BroadcastReceiver() {
                 .setContentText(content)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         }
-        notificationManager.notify(1, builder?.build())
+            notificationManager.notify(1, builder?.build())
+
     }
 }
