@@ -178,16 +178,14 @@ fun GoalList(navController: NavController) {
                     onClick = {
                         removeLocalGoal(localData, goalSelected.value!!)
                         list.remove(goalSelected.value)
-                        goalSelected.value = null
-                        dialogConfirm.value = false
                         val notifyId=goalSelected.value?._id
                         Log.d("Apps","id cua delete:"+notifyId)
                         Log.d("Apps","id cua delete:"+Math.abs(Objects.hashCode(notifyId)))
-
                         if (notifyId != null) {
                             cancelNotification(context,notifyId)
                         }
-
+                        goalSelected.value = null
+                        dialogConfirm.value = false
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

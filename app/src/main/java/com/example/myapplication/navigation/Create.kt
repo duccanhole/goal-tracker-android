@@ -180,6 +180,12 @@ fun CreateGoalPage(navController: NavController) {
                 Text(text = "Lưu", fontSize = TextSizeUtils.MEDIUM)
             } }
     }
+    val timenow=TimeUtils.toCalendar(TimeUtils.toISOString(LocalDateTime.now().hour,LocalDateTime.now().minute))?.timeInMillis
+    if (timenow != null) {
+        CustomNotification(context,"1","goal.name","Đến giờ thực hiện rồi!!!", R.drawable.ic_notifications_black_24dp,timenow+5)
+        cancelNotification(context,"1")
+    }
+
 
 }
 

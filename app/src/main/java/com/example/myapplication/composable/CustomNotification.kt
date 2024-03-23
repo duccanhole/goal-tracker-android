@@ -14,17 +14,18 @@ fun CustomNotification(context:Context, notifyId:String, title:String, content:S
         putExtra("title", title)
         putExtra("content", content)
         putExtra("smallIcon", smallIcon)
+        putExtra("notifyId",notifyId)
     }
-    val pendingIntent = PendingIntent.getBroadcast(context,Objects.hashCode(notifyId), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-    // Đặt hẹn giờ
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent)
     } else {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent)
     }
 }
+
 fun cancelNotification(context: Context, notifyId: String) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.cancel(Math.abs(Objects.hashCode(notifyId)))
+    notificationManager.cancel(notifyId.hashCode())
 }
