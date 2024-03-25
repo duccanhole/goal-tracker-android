@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,13 +41,19 @@ import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 
 class GoalModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
-    private val LIST_KEY = "goal_list"
-    private val listGoal: MutableList<Goal> by lazy {
-        savedStateHandle.get<MutableList<Goal>>(LIST_KEY) ?: mutableListOf()
-    }
+//    private val listGoal: MutableList<Goal> by lazy {
+//        savedStateHandle.get<MutableList<Goal>>(LIST_KEY) ?: mutableListOf()
+//    }
     var viewByDone by savedStateHandle.saveable{ mutableStateOf(false) }
-    val list: List<Goal>
-        get() = listGoal.filter { i -> i.isDone == viewByDone }
+    val listController = mutableStateListOf<Goal>()
+
+    val goals: List<Goal>
+        get() = listController.filter { i -> i.isDone == viewByDone }
+    val done: Number
+        get() = listController.filter { i -> i.isDone }.size
+    val undone: Number
+        get() = listController.filter { i -> !i.isDone }.size
+
     var loadingRemove by savedStateHandle.saveable { mutableStateOf(false) }
     var itemUpdating by savedStateHandle.saveable{ mutableStateOf("") }
     private val goalRepo = GoalRepo.getInstance()
@@ -56,9 +63,9 @@ class GoalModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     }
 
     fun mergeData(local: Array<Goal> = emptyArray(), remote: Array<Goal> = emptyArray()) {
-        listGoal.clear()
+        listController.clear()
         val newArray = (local + remote).distinctBy { it._id }
-        listGoal.addAll(newArray)
+        listController.addAll(newArray)
     }
 
     fun remove(goal: Goal, callback: () -> Unit) {
@@ -66,18 +73,23 @@ class GoalModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
         goalRepo.removeGoal(goal._id) { response, throwable ->
             localData?.remove(goal)
             loadingRemove = false
-            listGoal.remove(goal)
+            listController.remove(goal)
             callback()
         }
     }
 
     fun update(id: String, goal: UpdateAndCreateGoal, callback: () -> Unit) {
         itemUpdating = id
+        val index = listController.indexOfFirst { g -> g._id == id }
         goalRepo.updateGoal(id,goal) { response, throwable ->
-            if(throwable != null)
+            if(throwable != null) {
                 localData?.update(id, goal)
-            else
+                listController[index] = listController[index].copy(isDone = goal.isDone)
+            }
+            else {
                 localData?.update(id, response!!.result)
+                listController[index] = response!!.result
+            }
             itemUpdating = ""
             callback()
         }
@@ -123,7 +135,7 @@ fun HomePage(navController: NavController) {
             modifier = Modifier
                 .padding(it)
         ) {
-            DashBoardPreview(list = goalModel.list)
+            DashBoardPreview(done = goalModel.done, undone = goalModel.undone)
             if (loading)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
                     CircularProgressIndicator(

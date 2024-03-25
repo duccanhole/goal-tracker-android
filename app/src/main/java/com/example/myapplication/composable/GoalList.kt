@@ -1,5 +1,6 @@
 package com.example.myapplication.composable
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +45,7 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
                 colors = ButtonDefaults.buttonColors(if (!goalModel.viewByDone) Color(ColorUtils.accent) else Color.Transparent),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(text = "Chưa hoàn thành")
+                Text(text = "Chưa hoàn thành (${goalModel.undone})")
             }
             Spacer(modifier = Modifier.width(10.dp))
             Button(
@@ -52,15 +53,15 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
                 colors = ButtonDefaults.buttonColors(if (goalModel.viewByDone) Color(ColorUtils.accent) else Color.Transparent),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(text = "Đã hoàn thành")
+                Text(text = "Đã hoàn thành (${goalModel.done})")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
-            items(goalModel.list) { item ->
+            items(goalModel.goals) { item ->
                 GoalItem(item, loading = goalModel.itemUpdating == item._id,
                     onChecked = {
-                        val payload = UpdateAndCreateGoal(isDone = true)
+                        val payload = UpdateAndCreateGoal(isDone = it)
                         goalModel.update(item._id, payload) {}
                     },
                     onDelete = {
@@ -101,11 +102,11 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
                 Button(
                     onClick = {
 //                        removeLocalGoal(localData, goalSelected.value!!)
-//                        list.remove(goalSelected.value)
+//                        listController.remove(goalSelected.value)
 //                        goalSelected.value = null
 //                        dialogConfirm.value = false
 //                        removeLocalGoal(localData, goalSelected.value!!)
-//                        list.remove(goalSelected.value)
+//                        listController.remove(goalSelected.value)
 //                        goalSelected.value = null
 //                        dialogConfirm.value = false
 //                        val notifyId=goalSelected.value?._id?.toInt()
