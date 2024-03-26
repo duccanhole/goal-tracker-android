@@ -100,10 +100,11 @@ class LocalData() {
         jsonData?.let { write(it) }
     }
 
-    public fun add(goal: UpdateAndCreateGoal) {
+    public fun add(goal: UpdateAndCreateGoal): String {
         val jsonObject = JSONObject()
+        val newId = UUID.randomUUID().toString()
         jsonObject.apply {
-            put("_id", UUID.randomUUID().toString())
+            put("_id", newId)
             put("name", goal.name)
             put("user", goal.user)
             put("isDone", false)
@@ -113,6 +114,7 @@ class LocalData() {
         }
         jsonData?.put(jsonObject)
         jsonData?.let { write(it) }
+        return newId
     }
 
     public fun update(id: String, goal: Goal) {
@@ -223,8 +225,7 @@ class LocalData() {
             val file = File(context?.filesDir, fileName)
             val text = file.readText()
             Log.d("App", "Local goal: $text")
-//            JSONArray(text)
-            JSONArray("[]")
+            JSONArray(text)
         } catch (e: IOException) {
             e.printStackTrace()
             return JSONArray()

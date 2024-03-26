@@ -323,7 +323,7 @@ fun SettingPage(navController: NavController) {
         CustomDialog(
             onDismissRequest = { confirmLogout = false },
             title = "Xác nhận đăng xuất",
-            subtitle = "Dữ liệu chưa chưa được đồng bộ trên máy của bạn sẽ bị mất, đăng xuất?",
+            subtitle = "Dữ liệu chưa được đồng bộ trên máy của bạn sẽ bị mất, đăng xuất?",
             DeclineBtn = {
                 androidx.compose.material3.Button(
                     onClick = {

@@ -36,6 +36,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cancelNotification
+import com.example.myapplication.R
 import com.example.myapplication.repositories.goal.GoalRepo
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.repositories.goal.UpdateAndCreateGoal
@@ -74,38 +76,24 @@ fun onSave(
     if (goal.hasNotification) {
         payload = goal.copy(notifyAt = time)
     }
-//    if (notificationTime != null) {
-//        val notifyId = goal._id.toInt()
-//        setupNotification(
-//            context,
-//            notifyId,
-//            goal.name,
-//            "Đến giờ thực hiện rồi!!!",
-//            R.drawable.ic_notifications_black_24dp,
-//            notificationTime
-//        )
-//    }
     val localData = LocalData(context)
-//    localData.add(payload)
+    var notifyId = ""
     GoalRepo.getInstance().createGoal(payload) { response, throwable ->
         if (throwable != null) {
-            localData.add(payload)
-            callback()
+            notifyId = localData.add(payload)
         } else {
             localData.add(response!!.result)
-            callback()
+            notifyId = response.result._id
         }
-//        if (notificationTime != null) {
-//            val notifyId = localData
-//            setupNotification(
-//                context,
-//                notifyId,
-//                goal.name,
-//                "Đến giờ thực hiện rồi!!!",
-//                R.drawable.ic_notifications_black_24dp,
-//                notificationTime
-//            )
-//        }
+        setupNotification(
+            context,
+            notifyId,
+            goal.name!!,
+            "Đến giờ thực hiện rồi!!!",
+            R.drawable.ic_notifications_black_24dp,
+            notificationTime
+        )
+        callback()
     }
 }
 
@@ -117,7 +105,14 @@ fun CreateGoalPage(navController: NavController) {
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var goalData by remember {
-        mutableStateOf(UpdateAndCreateGoal(name = "", notifyAt = "", user = null, hasNotification = false))
+        mutableStateOf(
+            UpdateAndCreateGoal(
+                name = "",
+                notifyAt = "",
+                user = null,
+                hasNotification = false
+            )
+        )
     }
     val notifyAt = rememberTimePickerState(
         LocalDateTime.now().hour,
@@ -222,6 +217,24 @@ fun CreateGoalPage(navController: NavController) {
             }
         }
     }
+    val timenow = TimeUtils.toCalendar(
+        TimeUtils.toISOString(
+            LocalDateTime.now().hour,
+            LocalDateTime.now().minute
+        )
+    )?.timeInMillis
+    if (timenow != null) {
+        setupNotification(
+            context,
+            "1",
+            "goal.name",
+            "Đến giờ thực hiện rồi!!!",
+            R.drawable.ic_notifications_black_24dp,
+            timenow + 5
+        )
+        cancelNotification(context, "1")
+    }
+
 
 }
 
