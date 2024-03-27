@@ -1,5 +1,6 @@
 package com.example.myapplication.composable
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,19 +35,25 @@ import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.TextSizeUtils
 
-fun getPercent(list: List<Goal>): Float {
-    if(list.isEmpty()) return (0).toFloat()
-    val done = list.filter { i -> i.isDone }.size
-    return (done/list.size).toFloat()
+fun getPercent(done: Number, undone: Number): Float {
+    Log.d("App", "task change: $done, $undone")
+    val total = (done.toInt() + undone.toInt())
+    if(total == 0) return (0).toFloat()
+    return (done.toDouble()/total).toFloat()
 }
 
 @Composable()
-fun DashBoardPreview(list: List<Goal>) {
+fun DashBoardPreview(done: Number, undone: Number) {
     val context = LocalContext.current
     val userLocal = LocalDataUser(context)
     val userInfor = userLocal.getUser()
 
-    val percent = getPercent(list)
+    val percent by remember(done, undone) {
+        derivedStateOf {
+            getPercent(done, undone)
+        }
+    }
+
     Column(modifier = Modifier.padding(20.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -65,7 +76,7 @@ fun DashBoardPreview(list: List<Goal>) {
             }
         }
         Column(modifier = Modifier.padding(top = 10.dp)) {
-            Text(text = "Mục tiêu hôm nay: ${percent.toInt()}%", fontSize = TextSizeUtils.MEDIUM)
+            Text(text = "Mục tiêu hôm nay: ${(percent * 100).toInt()}%", fontSize = TextSizeUtils.MEDIUM)
             LinearProgressIndicator(
                 progress = percent,
                 modifier = Modifier

@@ -1,6 +1,10 @@
 package com.example.myapplication.composable
 
+<<<<<<< HEAD
 import android.util.Log
+=======
+import android.annotation.SuppressLint
+>>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +52,7 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
                 colors = ButtonDefaults.buttonColors(if (!goalModel.viewByDone) Color(ColorUtils.accent) else Color.Transparent),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(text = "Chưa hoàn thành")
+                Text(text = "Chưa hoàn thành (${goalModel.undone})")
             }
             Spacer(modifier = Modifier.width(10.dp))
             Button(
@@ -56,15 +60,15 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
                 colors = ButtonDefaults.buttonColors(if (goalModel.viewByDone) Color(ColorUtils.accent) else Color.Transparent),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(text = "Đã hoàn thành")
+                Text(text = "Đã hoàn thành (${goalModel.done})")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
-            items(goalModel.list) { item ->
+            items(goalModel.goals) { item ->
                 GoalItem(item, loading = goalModel.itemUpdating == item._id,
                     onChecked = {
-                        val payload = UpdateAndCreateGoal(isDone = true)
+                        val payload = UpdateAndCreateGoal(isDone = it)
                         goalModel.update(item._id, payload) {}
                     },
                     onDelete = {
@@ -104,11 +108,26 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
             ConfirmBtn = {
                 Button(
                     onClick = {
+<<<<<<< HEAD
                         val notifyId=goalSelected.value?._id
                         Log.d("App","notifyId in delete:"+notifyId)
                         if (notifyId != null) {
                             cancelNotification(context,notifyId)
                         }
+=======
+//                        removeLocalGoal(localData, goalSelected.value!!)
+//                        listController.remove(goalSelected.value)
+//                        goalSelected.value = null
+//                        dialogConfirm.value = false
+//                        removeLocalGoal(localData, goalSelected.value!!)
+//                        listController.remove(goalSelected.value)
+//                        goalSelected.value = null
+//                        dialogConfirm.value = false
+//                        val notifyId=goalSelected.value?._id?.toInt()
+//                        if (notifyId != null) {
+//                            cancelNotification(context,notifyId)
+//                        }
+>>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
                         goalSelected.value?.let {
                             goalModel.remove(it) {
                                 goalSelected.value = null

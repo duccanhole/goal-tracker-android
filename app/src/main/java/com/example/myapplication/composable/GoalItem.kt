@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.repositories.goal.Goal
@@ -54,7 +56,8 @@ fun GoalItem(goalItem: Goal, loading: Boolean = false, onChecked: (value: Boolea
                         fontSize = TextSizeUtils.MEDIUM,
                         color = Color.White,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        style = TextStyle(textDecoration = if(goalItem.isDone) TextDecoration.LineThrough else TextDecoration.None)
                     )
                     if (goalItem.hasNotification) {
                         Row {
