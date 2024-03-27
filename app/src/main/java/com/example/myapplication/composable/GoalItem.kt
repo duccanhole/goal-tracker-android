@@ -75,11 +75,13 @@ fun GoalItem(goalItem: Goal, loading: Boolean = false, onChecked: (value: Boolea
                     }
                 }
             }
-            IconButton(
-                onClick = onEdit,
-                enabled = !loading
-            ) {
-                Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
+            if(!goalItem.isDone) {
+                IconButton(
+                    onClick = onEdit,
+                    enabled = !loading
+                ) {
+                    Icon(Icons.Rounded.Edit, contentDescription = null, tint = Color.White)
+                }
             }
             IconButton(
                 onClick = onDelete,

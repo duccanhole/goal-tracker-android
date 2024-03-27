@@ -69,6 +69,26 @@ object GoalRepo {
         })
     }
 
+    fun getGoalDetail(id: String, callback: (Response<Goal>?, Throwable?) -> Unit) {
+        val call = client?.getGoalDetail(id)
+        call?.enqueue(object: Callback<Response<Goal>> {
+            override fun onResponse(
+                call: Call<Response<Goal>>,
+                response: retrofit2.Response<Response<Goal>>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<Goal>>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
     fun createGoal(goal: UpdateAndCreateGoal, callback: (Response<Goal>?, Throwable?) -> Unit) {
         val call = client?.createGoal(goal)
         call?.enqueue(object : Callback<Response<Goal>> {

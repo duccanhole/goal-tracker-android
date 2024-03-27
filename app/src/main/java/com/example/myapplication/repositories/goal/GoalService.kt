@@ -35,7 +35,7 @@ interface GoalService {
     fun getGoalToday(): Call<Response<Array<Goal>>>
 
     @GET("/goal/{id}")
-    fun getGoalDetail(@Path("id") id: String): Call<Goal>
+    fun getGoalDetail(@Path("id") id: String): Call<Response<Goal>>
 
     @DELETE("/goal/{id}")
     fun removeGoal(@Path("id") id: String): Call<Response<String>>

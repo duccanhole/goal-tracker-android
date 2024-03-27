@@ -18,7 +18,7 @@ fun setupNotification(context:Context, notifyId:String, title:String, content:St
         putExtra("smallIcon", smallIcon)
         putExtra("notifyId",notifyId)
     }
-    val pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_IMMUTABLE)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent)

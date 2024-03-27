@@ -49,7 +49,7 @@ import setupNotification
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun checkgoal(title: String?, time: Long): String {
+fun checkgoal(title: String?, time: Long, hasNotififcation: Boolean = false): String {
     if (title.isNullOrEmpty()) return "Không được để trống!!"
     val timeNow = TimeUtils.toCalendar(
         TimeUtils.toISOString(
@@ -57,7 +57,7 @@ fun checkgoal(title: String?, time: Long): String {
             LocalDateTime.now().minute
         )
     )?.timeInMillis
-    if (time < timeNow!!) {
+    if (time < timeNow!! && hasNotififcation) {
         return "Thời gian không được nhỏ hơn thời gian hiện tại!!"
     }
     return ""
@@ -192,7 +192,7 @@ fun CreateGoalPage(navController: NavController) {
 
                     if (notificationTime != null) {
                         loading = true
-                        errorMessage = checkgoal(goalData.name, notificationTime)
+                        errorMessage = checkgoal(goalData.name, notificationTime, goalData.hasNotification)
                         if (errorMessage == "") {
                             onSave(context, goalData, notifyAt) {
                                 navController.navigate(Navigation.HOME)
@@ -202,7 +202,6 @@ fun CreateGoalPage(navController: NavController) {
                             loading = false
                         }
                     }
-
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -217,25 +216,23 @@ fun CreateGoalPage(navController: NavController) {
             }
         }
     }
-    val timenow = TimeUtils.toCalendar(
-        TimeUtils.toISOString(
-            LocalDateTime.now().hour,
-            LocalDateTime.now().minute
-        )
-    )?.timeInMillis
-    if (timenow != null) {
-        setupNotification(
-            context,
-            "1",
-            "goal.name",
-            "Đến giờ thực hiện rồi!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 5
-        )
-        cancelNotification(context, "1")
-    }
-
-
+//    val timenow = TimeUtils.toCalendar(
+//        TimeUtils.toISOString(
+//            LocalDateTime.now().hour,
+//            LocalDateTime.now().minute
+//        )
+//    )?.timeInMillis
+//    if (timenow != null) {
+//        setupNotification(
+//            context,
+//            "1",
+//            "goal.name",
+//            "Đến giờ thực hiện rồi!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 5
+//        )
+//        cancelNotification(context, "1")
+//    }
 }
 
 
