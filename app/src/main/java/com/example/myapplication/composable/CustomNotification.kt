@@ -18,7 +18,7 @@ fun setupNotification(context:Context, notifyId:String, title:String, content:St
         putExtra("smallIcon", smallIcon)
         putExtra("notifyId",notifyId)
     }
-    val pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getBroadcast(context,Math.abs(notifyId.hashCode()), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent)
@@ -28,6 +28,17 @@ fun setupNotification(context:Context, notifyId:String, title:String, content:St
 }
 
 fun cancelNotification(context: Context, notifyId: String) {
-    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.cancel(notifyId.hashCode())
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+
+    val intent = Intent(context, AlarmReceiver::class.java)
+
+
+    val pendingIntent = PendingIntent.getBroadcast(context, Math.abs(notifyId.hashCode()), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+
+    pendingIntent?.let {
+        alarmManager.cancel(it)
+        it.cancel()
+    }
 }

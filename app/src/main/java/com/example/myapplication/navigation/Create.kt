@@ -2,6 +2,7 @@ package com.example.myapplication.navigation
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -85,6 +86,8 @@ fun onSave(
             localData.add(response!!.result)
             notifyId = response.result._id
         }
+        Log.d("App","Notification in Save:"+notifyId)
+        Log.d("App","Notification in Save:"+notifyId.hashCode())
         setupNotification(
             context,
             notifyId,
@@ -217,24 +220,31 @@ fun CreateGoalPage(navController: NavController) {
             }
         }
     }
-    val timenow = TimeUtils.toCalendar(
-        TimeUtils.toISOString(
-            LocalDateTime.now().hour,
-            LocalDateTime.now().minute
-        )
-    )?.timeInMillis
-    if (timenow != null) {
-        setupNotification(
-            context,
-            "1",
-            "goal.name",
-            "Đến giờ thực hiện rồi!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 5
-        )
-        cancelNotification(context, "1")
-    }
-
+//    val timenow = TimeUtils.toCalendar(
+//        TimeUtils.toISOString(
+//            LocalDateTime.now().hour,
+//            LocalDateTime.now().minute
+//        )
+//    )?.timeInMillis
+//    if (timenow != null) {
+//        setupNotification(
+//            context,
+//            "1",
+//            "goal.name1",
+//            "Đến giờ thực hiện rồi1!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 5
+//        )
+//        setupNotification(
+//            context,
+//            "2",
+//            "goal.name2",
+//            "Đến giờ thực hiện rồi2!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 10
+//        )
+//        cancelNotification(context, "2")
+//    }
 
 }
 

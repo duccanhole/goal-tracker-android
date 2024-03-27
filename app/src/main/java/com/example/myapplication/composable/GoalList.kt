@@ -1,6 +1,10 @@
 package com.example.myapplication.composable
 
+<<<<<<< HEAD
+import android.util.Log
+=======
 import android.annotation.SuppressLint
+>>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,8 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cancelNotification
 import com.example.myapplication.navigation.GoalModel
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
@@ -31,6 +37,7 @@ import com.example.myapplication.utils.ColorUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun GoalList(navController: NavController, goalModel: GoalModel) {
+    val context= LocalContext.current
     var dialogConfirm = remember {
         mutableStateOf<Boolean>(false)
     }
@@ -101,6 +108,13 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
             ConfirmBtn = {
                 Button(
                     onClick = {
+<<<<<<< HEAD
+                        val notifyId=goalSelected.value?._id
+                        Log.d("App","notifyId in delete:"+notifyId)
+                        if (notifyId != null) {
+                            cancelNotification(context,notifyId)
+                        }
+=======
 //                        removeLocalGoal(localData, goalSelected.value!!)
 //                        listController.remove(goalSelected.value)
 //                        goalSelected.value = null
@@ -113,6 +127,7 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
 //                        if (notifyId != null) {
 //                            cancelNotification(context,notifyId)
 //                        }
+>>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
                         goalSelected.value?.let {
                             goalModel.remove(it) {
                                 goalSelected.value = null
