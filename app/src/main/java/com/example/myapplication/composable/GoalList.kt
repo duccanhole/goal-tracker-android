@@ -103,28 +103,12 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
             ConfirmBtn = {
                 Button(
                     onClick = {
-                        val notifyId=goalSelected.value?._id
-                        Log.d("App","notifyId in delete:"+notifyId)
-                        if (notifyId != null) {
-                            cancelNotification(context,notifyId)
-                        }
-//                        removeLocalGoal(localData, goalSelected.value!!)
-//                        listController.remove(goalSelected.value)
-//                        goalSelected.value = null
-//                        dialogConfirm.value = false
-//                        removeLocalGoal(localData, goalSelected.value!!)
-//                        listController.remove(goalSelected.value)
-//                        goalSelected.value = null
-//                        dialogConfirm.value = false
-//                        val notifyId=goalSelected.value?._id?.toInt()
-//                        if (notifyId != null) {
-//                            cancelNotification(context,notifyId)
-//                        }
                         goalSelected.value?.let {
                             goalModel.remove(it) {
                                 goalSelected.value = null
                                 dialogConfirm.value = false
                             }
+                            cancelNotification(context,it._id)
                         }
                     },
                     modifier = Modifier

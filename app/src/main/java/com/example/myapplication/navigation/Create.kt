@@ -50,7 +50,7 @@ import setupNotification
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun checkgoal(title: String?, time: Long): String {
+fun checkgoal(title: String?, time: Long, hasNotififcation: Boolean = false): String {
     if (title.isNullOrEmpty()) return "Không được để trống!!"
     val timeNow = TimeUtils.toCalendar(
         TimeUtils.toISOString(
@@ -58,7 +58,7 @@ fun checkgoal(title: String?, time: Long): String {
             LocalDateTime.now().minute
         )
     )?.timeInMillis
-    if (time < timeNow!!) {
+    if (time < timeNow!! && hasNotififcation) {
         return "Thời gian không được nhỏ hơn thời gian hiện tại!!"
     }
     return ""
@@ -86,8 +86,6 @@ fun onSave(
             localData.add(response!!.result)
             notifyId = response.result._id
         }
-        Log.d("App","Notification in Save:"+notifyId)
-        Log.d("App","Notification in Save:"+notifyId.hashCode())
         setupNotification(
             context,
             notifyId,
@@ -220,32 +218,31 @@ fun CreateGoalPage(navController: NavController) {
             }
         }
     }
-    val timenow = TimeUtils.toCalendar(
-        TimeUtils.toISOString(
-            LocalDateTime.now().hour,
-            LocalDateTime.now().minute
-        )
-    )?.timeInMillis
-    if (timenow != null) {
-        setupNotification(
-            context,
-            "1",
-            "goal.name1",
-            "Đến giờ thực hiện rồi1!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 5
-        )
-        setupNotification(
-            context,
-            "2",
-            "goal.name2",
-            "Đến giờ thực hiện rồi2!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 10
-        )
-//        cancelNotification(context, "2")
-    }
-
+//    val timenow = TimeUtils.toCalendar(
+//        TimeUtils.toISOString(
+//            LocalDateTime.now().hour,
+//            LocalDateTime.now().minute
+//        )
+//    )?.timeInMillis
+//    if (timenow != null) {
+//        setupNotification(
+//            context,
+//            "1",
+//            "goal.name1",
+//            "Đến giờ thực hiện rồi1!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 5
+//        )
+//        setupNotification(
+//            context,
+//            "2",
+//            "goal.name2",
+//            "Đến giờ thực hiện rồi2!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 10
+//        )
+////        cancelNotification(context, "2")
+//    }
 }
 
 
