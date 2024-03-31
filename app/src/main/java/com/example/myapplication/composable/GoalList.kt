@@ -1,6 +1,6 @@
 package com.example.myapplication.composable
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,8 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cancelNotification
 import com.example.myapplication.navigation.GoalModel
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.LocalData
@@ -31,6 +33,7 @@ import com.example.myapplication.utils.ColorUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun GoalList(navController: NavController, goalModel: GoalModel) {
+    val context= LocalContext.current
     var dialogConfirm = remember {
         mutableStateOf<Boolean>(false)
     }
@@ -101,23 +104,12 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
             ConfirmBtn = {
                 Button(
                     onClick = {
-//                        removeLocalGoal(localData, goalSelected.value!!)
-//                        listController.remove(goalSelected.value)
-//                        goalSelected.value = null
-//                        dialogConfirm.value = false
-//                        removeLocalGoal(localData, goalSelected.value!!)
-//                        listController.remove(goalSelected.value)
-//                        goalSelected.value = null
-//                        dialogConfirm.value = false
-//                        val notifyId=goalSelected.value?._id?.toInt()
-//                        if (notifyId != null) {
-//                            cancelNotification(context,notifyId)
-//                        }
                         goalSelected.value?.let {
                             goalModel.remove(it) {
                                 goalSelected.value = null
                                 dialogConfirm.value = false
                             }
+                            cancelNotification(context,it._id)
                         }
                     },
                     modifier = Modifier

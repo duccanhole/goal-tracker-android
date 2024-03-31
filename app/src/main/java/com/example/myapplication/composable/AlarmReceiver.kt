@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 
 class AlarmReceiver:BroadcastReceiver() {
@@ -23,6 +24,7 @@ class AlarmReceiver:BroadcastReceiver() {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
         }
-            notificationManager.notify(notifyId.hashCode(), builder?.build())
+            Log.d("App","notifYID in Alarm :"+notifyId)
+            notificationManager.notify(Math.abs(notifyId.hashCode()), builder?.build())
     }
 }

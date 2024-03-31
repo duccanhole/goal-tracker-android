@@ -2,6 +2,7 @@ package com.example.myapplication.navigation
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import cancelNotification
 import com.example.myapplication.R
-import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.GoalRepo
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.repositories.goal.UpdateAndCreateGoal
@@ -48,7 +48,6 @@ import com.example.myapplication.utils.Navigation
 import com.example.myapplication.utils.TextSizeUtils
 import com.example.myapplication.utils.TimeUtils
 import setupNotification
-import java.time.LocalDateTime
 import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 fun onUpdate(
@@ -100,7 +99,7 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
     var goalData by remember {
         mutableStateOf<UpdateAndCreateGoal>(UpdateAndCreateGoal(name = ""))
     }
-    var notifyAt = rememberTimePickerState(0, 0, is24Hour = true)
+    var notifyAt = rememberTimePickerState(0, 0, true)
 
     LaunchedEffect(Unit) {
         loading = true
@@ -119,6 +118,7 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
                 val cal = TimeUtils.toCalendar(result.notifyAt)
                 val hour = if(result.hasNotification && cal != null) cal.get(Calendar.HOUR_OF_DAY) else 0
                 val minus = if(result.hasNotification && cal != null) cal.get(Calendar.MINUTE) else 0
+                Log.d("App", "$hour, $minus line 121")
                 notifyAt = TimePickerState(hour, minus, true)
             }
             loading = false

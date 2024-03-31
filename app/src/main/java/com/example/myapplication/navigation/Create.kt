@@ -2,6 +2,7 @@ package com.example.myapplication.navigation
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -202,6 +203,7 @@ fun CreateGoalPage(navController: NavController) {
                             loading = false
                         }
                     }
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
