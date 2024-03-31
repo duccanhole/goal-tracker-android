@@ -193,7 +193,7 @@ fun CreateGoalPage(navController: NavController) {
 
                     if (notificationTime != null) {
                         loading = true
-                        errorMessage = checkgoal(goalData.name, notificationTime, goalData.hasNotification)
+                        errorMessage = checkgoal(goalData.name, notificationTime)
                         if (errorMessage == "") {
                             onSave(context, goalData, notifyAt) {
                                 navController.navigate(Navigation.HOME)
@@ -228,12 +228,20 @@ fun CreateGoalPage(navController: NavController) {
 //        setupNotification(
 //            context,
 //            "1",
-//            "goal.name",
-//            "Đến giờ thực hiện rồi!!!",
+//            "goal.name1",
+//            "Đến giờ thực hiện rồi1!!!",
 //            R.drawable.ic_notifications_black_24dp,
 //            timenow + 5
 //        )
-//        cancelNotification(context, "1")
+//        setupNotification(
+//            context,
+//            "2",
+//            "goal.name2",
+//            "Đến giờ thực hiện rồi2!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 10
+//        )
+////        cancelNotification(context, "2")
 //    }
 }
 
