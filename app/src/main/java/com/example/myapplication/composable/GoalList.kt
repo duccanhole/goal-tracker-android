@@ -1,10 +1,5 @@
 package com.example.myapplication.composable
-
-<<<<<<< HEAD
 import android.util.Log
-=======
-import android.annotation.SuppressLint
->>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -108,13 +103,11 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
             ConfirmBtn = {
                 Button(
                     onClick = {
-<<<<<<< HEAD
                         val notifyId=goalSelected.value?._id
                         Log.d("App","notifyId in delete:"+notifyId)
                         if (notifyId != null) {
                             cancelNotification(context,notifyId)
                         }
-=======
 //                        removeLocalGoal(localData, goalSelected.value!!)
 //                        listController.remove(goalSelected.value)
 //                        goalSelected.value = null
@@ -127,7 +120,6 @@ fun GoalList(navController: NavController, goalModel: GoalModel) {
 //                        if (notifyId != null) {
 //                            cancelNotification(context,notifyId)
 //                        }
->>>>>>> e2c48dce39aa74b609cd4e4b9776fa6e5dd790b5
                         goalSelected.value?.let {
                             goalModel.remove(it) {
                                 goalSelected.value = null
