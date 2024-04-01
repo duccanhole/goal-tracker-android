@@ -56,6 +56,7 @@ import com.example.myapplication.R
 import com.example.myapplication.composable.CustomDialog
 import com.example.myapplication.composable.DashBoardPreview
 import com.example.myapplication.composable.SettingItem
+import com.example.myapplication.composable.SyncDataContainer
 import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.repositories.user.LocalDataUser
 import com.example.myapplication.repositories.user.UserRepo
@@ -115,6 +116,12 @@ fun SettingPage(navController: NavController) {
         mutableStateOf(false)
     }
     var confirmLogout by remember {
+        mutableStateOf(false)
+    }
+    var syncDialog by remember {
+        mutableStateOf(false)
+    }
+    var isSync by remember {
         mutableStateOf(false)
     }
     Surface(
@@ -195,9 +202,9 @@ fun SettingPage(navController: NavController) {
                         icon = Icons.Rounded.WbSunny,
                         onClick = { null })
                     SettingItem(
-                        name = "Đồng bộ dữ liệu",
+                        name = if (isSync) "Đã đồng bộ dữ liệu" else "Đồng bộ dữ liệu",
                         icon = Icons.Rounded.Sync,
-                        onClick = { null })
+                        onClick = { syncDialog = true })
                     SettingItem(
                         name = "Thông tin về ứng dụng",
                         icon = Icons.Rounded.ErrorOutline,
@@ -276,8 +283,6 @@ fun SettingPage(navController: NavController) {
                         loading = true
                         val userid = userInfor?._id.toString()
                         val token = userLocal.getToken().toString()
-                        Log.d("App", userid)
-                        Log.d("App", token)
                         if (errorMessage == "") {
                             onChangePassword(
                                 token,
@@ -357,5 +362,13 @@ fun SettingPage(navController: NavController) {
                 }
             }
         )
+    }
+    if (syncDialog) {
+        CustomDialog(title = "Đang xử lý, vui lòng chờ", onDismissRequest = { /*TODO*/ }, Body = {
+            SyncDataContainer(onFinished = {
+                syncDialog = false
+                isSync = true
+            })
+        })
     }
 }
