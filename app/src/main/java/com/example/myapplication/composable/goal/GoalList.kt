@@ -1,5 +1,4 @@
-package com.example.myapplication.composable
-import android.util.Log
+package com.example.myapplication.composable.goal
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cancelNotification
+import com.example.myapplication.composable.CustomDialog
 import com.example.myapplication.navigation.GoalModel
 import com.example.myapplication.repositories.goal.Goal
-import com.example.myapplication.repositories.goal.LocalData
 import com.example.myapplication.repositories.goal.UpdateAndCreateGoal
 import com.example.myapplication.utils.ColorUtils
 
