@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.saveable
 import androidx.navigation.NavController
 import com.example.myapplication.composable.DashBoardPreview
-import com.example.myapplication.composable.GoalList
+import com.example.myapplication.composable.goal.GoalList
 import com.example.myapplication.repositories.goal.Goal
 import com.example.myapplication.repositories.goal.GoalRepo
 import com.example.myapplication.repositories.goal.LocalData

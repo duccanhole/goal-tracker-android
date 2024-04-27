@@ -36,39 +36,55 @@ fun SyncDataContainer(onFinished: () -> Unit) {
     var failCount by remember {
         mutableIntStateOf(0)
     }
+    var allSyncDone by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         val unSyncList = localData.getAll().filter { i -> i.user.isNullOrEmpty() }
-        for (g: Goal in unSyncList) {
-            val payload = UpdateAndCreateGoal(
-                name = g.name,
-                isDone = g.isDone,
-                hasNotification = g.hasNotification,
-                notifyAt = g.notifyAt
-            )
-            GoalRepo.getInstance().createGoal(payload) { response, throwable ->
-                if (throwable != null) {
-                    failCount++;
-                } else {
-                    localData.update(g._id, response!!.result)
-                    successCount++;
+        if (unSyncList.isEmpty()) {
+            allSyncDone = true
+            delay(2500)
+        } else {
+            for (g: Goal in unSyncList) {
+                val payload = UpdateAndCreateGoal(
+                    name = g.name,
+                    isDone = g.isDone,
+                    hasNotification = g.hasNotification,
+                    notifyAt = g.notifyAt
+                )
+                GoalRepo.getInstance().createGoal(payload) { response, throwable ->
+                    if (throwable != null) {
+                        failCount++;
+                    } else {
+                        localData.update(g._id, response!!.result)
+                        successCount++;
+                    }
                 }
+                delay(1500)
             }
-            delay(1500)
         }
         onFinished()
     }
     Column {
-        Text(
-            text = "Thành công: $successCount, thất bại: $failCount",
-            fontSize = TextSizeUtils.MEDIUM,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        LinearProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(10.dp)
-        )
+        if (allSyncDone) {
+            Text(
+                text = "Dữ liệu của bạn đã được đồng bộ.", fontSize = TextSizeUtils.MEDIUM,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        } else {
+            Text(
+                text = "Thành công: $successCount, thất bại: $failCount",
+                fontSize = TextSizeUtils.MEDIUM,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+            )
+        }
     }
 }
