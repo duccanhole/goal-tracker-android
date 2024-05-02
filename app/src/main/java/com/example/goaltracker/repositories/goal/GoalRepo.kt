@@ -153,4 +153,44 @@ object GoalRepo {
             }
         })
     }
+
+    fun countGoal(days: Number = 0, callback: (Response<CountResult>?, Throwable?) -> Unit) {
+        val call = client?.countGoal(days)
+        call?.enqueue(object : Callback<Response<CountResult>> {
+            override fun onResponse(
+                call: Call<Response<CountResult>>,
+                response: retrofit2.Response<Response<CountResult>>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<CountResult>>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
+
+    fun getUserLevel(callback: (Response<Number>?, Throwable?) -> Unit) {
+        val call = client?.getUserLevel()
+        call?.enqueue(object : Callback<Response<Number>> {
+            override fun onResponse(
+                call: Call<Response<Number>>,
+                response: retrofit2.Response<Response<Number>>
+            ) {
+                if (response.isSuccessful) {
+                    callback(response.body(), null)
+                } else {
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Response<Number>>, t: Throwable) {
+                callback(null, t)
+            }
+        })
+    }
 }
