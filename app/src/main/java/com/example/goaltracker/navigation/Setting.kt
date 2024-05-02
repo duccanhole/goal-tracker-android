@@ -9,9 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Login
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.ExitToApp
+import androidx.compose.material.icons.rounded.Login
 import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,7 +70,7 @@ fun SettingPage(navController: NavController) {
                         .fillMaxWidth()
                         .padding(30.dp)
                 ) {
-                    SettingItem(name = "Đăng nhập", icon = Icons.Rounded.Mail, onClick = {
+                    SettingItem(name = "Đăng nhập", icon = Icons.AutoMirrored.Rounded.Login, onClick = {
                         navController.navigate(Navigation.SIGN_IN)
                     })
                 }

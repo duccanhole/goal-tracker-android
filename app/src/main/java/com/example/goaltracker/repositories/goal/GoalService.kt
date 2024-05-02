@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 data class Goal(
     val _id: String,
@@ -24,6 +25,11 @@ data class UpdateAndCreateGoal(
     val isDone: Boolean = false,
     val hasNotification: Boolean = false,
     val notifyAt: String? = null
+)
+
+data class CountResult(
+    val done: Number,
+    val undone: Number
 )
 
 data class Response<T>(
@@ -45,4 +51,10 @@ interface GoalService {
 
     @PUT("/goal/{id}")
     fun updateGoal(@Path("id") id: String,@Body body: UpdateAndCreateGoal): Call<Response<Goal>>
+
+    @GET("/goal/count")
+    fun countGoal(@Query("days") days: Number = 0): Call<Response<CountResult>>
+
+    @GET("/goal/level-user")
+    fun getUserLevel(): Call<Response<Number>>
 }
