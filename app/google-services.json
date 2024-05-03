@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "739279456410",
+    "project_id": "example-378cb",
+    "storage_bucket": "example-378cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739279456410:android:e0124e22bd27461d8e7723",
+        "android_client_info": {
+          "package_name": "com.example.goaltracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "739279456410-b2do7t1n5i8k3vaticveqin1lq78g4jf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.goaltracker",
+            "certificate_hash": "59043adcd79f31c05164cb7b3ee5ab9f11e59632"
+          }
+        },
+        {
+          "client_id": "739279456410-84odekigf0ro4da0dbcqj0rme948pgif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzK44MU03waVAerBG1oxFaBkPFh61H34Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "739279456410-84odekigf0ro4da0dbcqj0rme948pgif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

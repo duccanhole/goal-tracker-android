@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Goal tracker</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="web_client_id">739279456410-84odekigf0ro4da0dbcqj0rme948pgif.apps.googleusercontent.com</string>
 </resources>
