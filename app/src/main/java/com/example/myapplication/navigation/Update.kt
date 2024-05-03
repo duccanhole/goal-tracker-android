@@ -131,7 +131,7 @@ fun UpdateGoalPage(navController: NavHostController, id: String?) {
             loading = false
         }
     }
-    LazyColumn(modifier = Modifier.padding(20.dp)) {
+    LazyColumn() {
        item {
            Text(
                text = "Cập nhật mục tiêu ${notifyAt.hour}, ${notifyAt.minute}",

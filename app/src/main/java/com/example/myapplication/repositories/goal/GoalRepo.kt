@@ -1,7 +1,6 @@
 package com.example.myapplication.repositories.goal
 
 import android.util.Log
-import com.example.myapplication.repositories.user.UserRepo
 import com.example.myapplication.utils.BaseUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -153,5 +152,24 @@ object GoalRepo {
                 callback(null, t)
             }
         })
+    }
+
+    fun countStatic(callback: (Response<CountStatic>?, Throwable?) -> Unit){
+        val call= client?.getCountStatic()
+        call?.enqueue((object: Callback<Response<CountStatic>>{
+            override fun onResponse(
+                call: Call<Response<CountStatic>>,
+                response: retrofit2.Response<Response<CountStatic>>
+            ) {
+                if(response.isSuccessful){
+                    callback(response.body(),null)
+                }else{
+                    callback(null, Exception("An error has occured, code: ${response.code()}"))
+                }
+            }
+            override fun onFailure(call: Call<Response<CountStatic>>, t: Throwable) {
+                callback(null, t)
+            }
+        }))
     }
 }

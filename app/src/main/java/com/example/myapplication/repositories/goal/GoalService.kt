@@ -29,7 +29,10 @@ data class UpdateAndCreateGoal(
 data class Response<T>(
     val result: T
 )
-
+data class CountStatic(
+    val done:Int,
+    val undone:Int
+)
 interface GoalService {
     @GET("/goal/today")
     fun getGoalToday(): Call<Response<Array<Goal>>>
@@ -45,4 +48,7 @@ interface GoalService {
 
     @PUT("/goal/{id}")
     fun updateGoal(@Path("id") id: String,@Body body: UpdateAndCreateGoal): Call<Response<Goal>>
+
+    @GET("/goal/count")
+    fun getCountStatic():Call<Response<CountStatic>>
 }

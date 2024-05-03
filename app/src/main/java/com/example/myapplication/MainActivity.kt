@@ -1,8 +1,11 @@
 package com.example.myapplication
 
 import BottomBar
+import StatisticPage
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,7 +22,6 @@ import com.example.myapplication.navigation.HomePage
 import com.example.myapplication.navigation.SettingPage
 import com.example.myapplication.navigation.SigninPage
 import com.example.myapplication.navigation.SignupPage
-import com.example.myapplication.navigation.StatisticPage
 import com.example.myapplication.navigation.UpdateGoalPage
 import com.example.myapplication.utils.ColorUtils
 import com.example.myapplication.utils.Navigation
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var binding: ActivityMainBinding
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun App() {
     val navController = rememberNavController()
