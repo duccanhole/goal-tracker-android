@@ -25,7 +25,7 @@ fun StatisticEllipse(percent: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(230.dp)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val canvasWidth = size.width

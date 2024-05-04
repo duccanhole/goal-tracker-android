@@ -48,17 +48,22 @@ class LocalData() {
         var result = emptyArray<Goal>()
         jsonData?.let {
             for (i in 0 until it.length()) {
-                val jsonOject = it.getJSONObject(i);
-                val goal = Goal(
-                    _id = jsonOject.getString("_id"),
-                    name = jsonOject.getString("name"),
-                    user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
-                    isDone = jsonOject.getBoolean("isDone"),
-                    hasNotification = jsonOject.getBoolean("hasNotification"),
-                    notifyAt = jsonOject.getString("notifyAt"),
-                    createdAt = jsonOject.getString("createdAt")
-                )
-                result += goal
+                try {
+                    val jsonOject = it.getJSONObject(i);
+                    val goal = Goal(
+                        _id = jsonOject.getString("_id"),
+                        name = jsonOject.getString("name"),
+                        user = if (jsonOject.isNull("user")) "" else jsonOject.getString("user"),
+                        isDone = jsonOject.getBoolean("isDone"),
+                        hasNotification = jsonOject.getBoolean("hasNotification"),
+                        notifyAt = jsonOject.getString("notifyAt"),
+                        createdAt = jsonOject.getString("createdAt")
+                    )
+                    result += goal
+                }
+                catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         return result

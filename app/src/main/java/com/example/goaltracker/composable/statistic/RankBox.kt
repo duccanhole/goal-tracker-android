@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,18 +27,27 @@ import com.example.goaltracker.utils.TextSizeUtils
 
 @SuppressLint("DiscouragedApi")
 @Composable
-fun RankBox(goalcomplete:Int){
+fun RankBox(rank:Int){
     val context = LocalContext.current
-    val rank by remember {
+    val goalComplete = remember(rank) {
         mutableStateOf(
-            when {
-                goalcomplete > 99 -> 4
-                goalcomplete > 49 -> 3
-                goalcomplete > 19 -> 2
-                goalcomplete > 9 -> 1
+            when (rank) {
+                4 -> 200
+                3 -> 100
+                2 -> 25
+                1 -> 10
                 else -> 0
             }
         )
+    }
+    LaunchedEffect(rank) {
+        goalComplete.value = when (rank) {
+            4 -> 200
+            3 -> 100
+            2 -> 25
+            1 -> 10
+            else -> 0
+        }
     }
     val imageFileName = "rank$rank"
     val imageResourceId = context.resources.getIdentifier(imageFileName, "drawable", context.packageName)
@@ -68,7 +77,7 @@ fun RankBox(goalcomplete:Int){
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = TextSizeUtils.LARGE)
-                Text(text = "Đã hoàn thành $goalcomplete số mục tiêu đề ra",
+                Text(text = "Đã hoàn thành dưới ${goalComplete.value}  mục tiêu",
                     modifier= Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(20.dp, 0.dp),
