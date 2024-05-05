@@ -218,31 +218,32 @@ fun CreateGoalPage(navController: NavController) {
             }
         }
     }
-    val timenow = TimeUtils.toCalendar(
-        TimeUtils.toISOString(
-            LocalDateTime.now().hour,
-            LocalDateTime.now().minute
-        )
-    )?.timeInMillis
-    if (timenow != null) {
-        setupNotification(
-            context,
-            "1",
-            "goal.name1",
-            "Đến giờ thực hiện rồi1!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 5
-        )
-        setupNotification(
-            context,
-            "2",
-            "goal.name2",
-            "Đến giờ thực hiện rồi2!!!",
-            R.drawable.ic_notifications_black_24dp,
-            timenow + 10
-        )
+//    val timenow = TimeUtils.toCalendar(
+//        TimeUtils.toISOString(
+//            LocalDateTime.now().hour,
+//            LocalDateTime.now().minute
+//        )
+//    )?.timeInMillis
+//    if (timenow != null) {
+//        Log.d("Apps","TIme nơ: "+timenow)
+//        setupNotification(
+//            context,
+//            "1",
+//            "goal.name1",
+//            "Đến giờ thực hiện rồi1!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 5
+//        )
+//        setupNotification(
+//            context,
+//            "2",
+//            "goal.name2",
+//            "Đến giờ thực hiện rồi2!!!",
+//            R.drawable.ic_notifications_black_24dp,
+//            timenow + 10
+//        )
 //        cancelNotification(context, "2")
-    }
+//    }
 }
 
 
