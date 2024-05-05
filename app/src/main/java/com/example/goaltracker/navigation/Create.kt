@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePicker
@@ -225,6 +225,7 @@ fun CreateGoalPage(navController: NavController) {
 //        )
 //    )?.timeInMillis
 //    if (timenow != null) {
+//        Log.d("Apps","TIme nơ: "+timenow)
 //        setupNotification(
 //            context,
 //            "1",
@@ -241,7 +242,7 @@ fun CreateGoalPage(navController: NavController) {
 //            R.drawable.ic_notifications_black_24dp,
 //            timenow + 10
 //        )
-////        cancelNotification(context, "2")
+//        cancelNotification(context, "2")
 //    }
 }
 

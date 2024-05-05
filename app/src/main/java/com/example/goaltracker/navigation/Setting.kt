@@ -150,7 +150,7 @@ fun SettingPage(navController: NavController) {
                         localData.clear()
                         Firebase.auth.signOut()
                         confirmLogout = true
-                        navController.navigate(Navigation.SIGN_IN)
+                        navController.navigate(Navigation.HOME)
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

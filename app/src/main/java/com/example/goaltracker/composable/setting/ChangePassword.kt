@@ -123,6 +123,7 @@ fun ChangePassword() {
                         textStyle = TextStyle(fontSize = TextSizeUtils.MEDIUM),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true
+
                     )
                     if (errorMessage.isNotEmpty()) {
                         Text(
